@@ -4,14 +4,20 @@
 using std::cout;
 using std::endl;
 
-int estimation(vector<Card> v) {
+vector<int> estimation(vector<Card> v) {
 
 	sort(v.begin(), v.end());//sort vector<Card> by dignity from small to high
 
 	int countSameDignity = 1, countSameSuit = 1, countStraight = 1;
-	int combinationPoints = 0; //points for the deck's combination; 0 represents no combination
+	vector<int> combinationPoints{ 0,0 }; //points for the deck's combination; 
+										  //combinationPoints[0] represents combination of several cards (PAIR, FLUSH and etc.)
+										  //combinationPoints[1] represents the elder dignity
 	vector<bool> recordedDignityPositions(PLAYER_DECK_SIZE); //to mark cards with a same dignity
 	bool onePair = false, secondPair = false, trinity = false, flush = false, straight = false;
+
+	combinationPoints[1] = v.back().getCardDignity();//last card in sorted deck has elder dignity
+
+	cout << "Elder dignity: " << combinationPoints[1] << endl;
 
 	for (int i = 0; i < v.size(); i++) {
 
@@ -39,23 +45,23 @@ int estimation(vector<Card> v) {
 
 				}
 
-				if (i == 0 && countSameDignity == 1) { //to prevent unnecessary iterations
-													   //(flush and straight cannot exist if the deck already has pair/trinity/four)
-					if (v[i].getCardSuit() == v[j].getCardSuit()) {
-						++countSameSuit;
+				if (i == 0 && countSameDignity == 1) {//to prevent unnecessary iterations
+												      //(flush and straight cannot exist if the deck already has pair/trinity/four)
+						if (v[i].getCardSuit() == v[j].getCardSuit()) {
+							++countSameSuit;
 
-						cout << "Flush count " << countSameSuit << endl;
-
-
-					}
-
-					if (v[j - 1].getCardDignity() == v[j].getCardDignity() - 1) { //mistake
-						++countStraight;
-
-						cout << "Straight count " << countStraight << endl;
+							cout << "Flush count " << countSameSuit << endl;
 
 
-					}
+						}
+
+						if (v[j - 1].getCardDignity() == v[j].getCardDignity() - 1) { //mistake
+							++countStraight;
+
+							cout << "Straight count " << countStraight << endl;
+
+
+						}
 
 				}
 
@@ -67,14 +73,14 @@ int estimation(vector<Card> v) {
 
 		if (countSameSuit == 5) {
 			flush = true;
-			combinationPoints = FLUSH;
+			combinationPoints[0] = FLUSH;
 			cout << "FLUSH" << endl;
 			//break;
 		}
 
 		if (countStraight == 5) {
 			straight = true;
-			combinationPoints = STRAIGHT;
+			combinationPoints[0] = STRAIGHT;
 			cout << "STRAIGHT" << endl;
 			//break;
 		}
@@ -84,12 +90,12 @@ int estimation(vector<Card> v) {
 			if (straight && flush) {
 
 				if (v[PLAYER_DECK_SIZE - 1].getCardDignity() == A) {
-					combinationPoints = ROYAL_FLUSH;
+					combinationPoints[0] = ROYAL_FLUSH;
 					cout << "ROYAL FLUSH" << endl;
 					break;
 				}
 				else {
-					combinationPoints = STRAIGHT_FLUSH;
+					combinationPoints[0] = STRAIGHT_FLUSH;
 					cout << "STRAIGHT FLUSH" << endl;
 					break;
 				}
@@ -103,33 +109,33 @@ int estimation(vector<Card> v) {
 
 
 		if (countSameDignity == 4) {
-			combinationPoints = FOUR_OF_A_KIND;
+			combinationPoints[0] = FOUR_OF_A_KIND;
 			cout << "FOUR OF A KIND" << endl;
 			break;
 		}
 
 		if (countSameDignity == 3) {
 			trinity = true;
-			combinationPoints = THREE_OF_A_KIND;
+			combinationPoints[0] = THREE_OF_A_KIND;
 			cout << "THREE OF A KIND" << endl;
 		}
 
 		if (countSameDignity == 2) {
 			if (onePair) { //if the deck already has one pair
-				combinationPoints = TWO_PAIRS;
+				combinationPoints[0] = TWO_PAIRS;
 				cout << "TWO PAIRS" << endl;
 				break;
 				//secondPair = true;
 			}
 			else {
 				onePair = true;
-				combinationPoints = ONE_PAIR;
+				combinationPoints[0] = ONE_PAIR;
 				cout << "ONE PAIR" << endl;
 			}
 		}
 
 		if (onePair && trinity) {
-			combinationPoints = FULL_HOUSE;
+			combinationPoints[0] = FULL_HOUSE;
 			cout << "FULL HOUSE" << endl;
 			break;
 		}
@@ -140,7 +146,7 @@ int estimation(vector<Card> v) {
 	}
 
 
-	if (combinationPoints == 0) { //if no combination found
+	/*if (combinationPoints == 0) { //if no combination found
 
 		int maxDignity = 0;
 
@@ -158,7 +164,7 @@ int estimation(vector<Card> v) {
 
 		combinationPoints = maxDignity;
 
-	}
+	}*/
 
 
 

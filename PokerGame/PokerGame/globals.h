@@ -32,7 +32,7 @@ enum cardSuit {
 };
 
 enum combinations {
-	ONE_PAIR = A + 1, //if no combination found - assign points for the greatest dignity
+	ONE_PAIR,
 	TWO_PAIRS,
 	THREE_OF_A_KIND,
 	STRAIGHT,

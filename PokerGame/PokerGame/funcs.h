@@ -5,7 +5,7 @@
 #include "Card.h"
 using std::vector;
 
-int estimation(vector<Card> v);
+vector<int> estimation(vector<Card> v);
 
 #endif __FUNCS_H__
 
