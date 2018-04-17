@@ -4,9 +4,9 @@
 using std::cout;
 using std::endl;
 
-vector<int> estimation(vector<Card> v) {
+vector<int> estimation(vector<Card> deck) {
 
-	sort(v.begin(), v.end());//sort vector<Card> by dignity from small to high
+	sort(deck.begin(), deck.end());//sort vector<Card> by dignity from small to high
 
 	int countSameDignity = 1, countSameSuit = 1, countStraight = 1;
 	vector<int> combinationPoints{ 0,0 }; //points for the deck's combination; 
@@ -15,11 +15,11 @@ vector<int> estimation(vector<Card> v) {
 	vector<bool> recordedDignityPositions(PLAYER_DECK_SIZE); //to mark cards with a same dignity
 	bool onePair = false, secondPair = false, trinity = false, flush = false, straight = false;
 
-	combinationPoints[1] = v.back().getCardDignity();//last card in sorted deck has elder dignity
+	combinationPoints[1] = deck.back().getCardDignity();//last card in sorted deck has elder dignity
 
 	cout << "Elder dignity: " << combinationPoints[1] << endl;
 
-	for (int i = 0; i < v.size(); i++) {
+	for (int i = 0; i < deck.size(); i++) {
 
 		if (recordedDignityPositions[i]) {
 			continue; //preventing unnecessary iterations
@@ -29,7 +29,7 @@ vector<int> estimation(vector<Card> v) {
 		}
 
 
-		for (int j = 0; j < v.size(); j++) {
+		for (int j = 0; j < deck.size(); j++) {
 
 			if (recordedDignityPositions[j]) {
 				continue;
@@ -37,7 +37,7 @@ vector<int> estimation(vector<Card> v) {
 
 			if (i != j) {
 
-				if (v[i].getCardDignity() == v[j].getCardDignity()) {
+				if (deck[i].getCardDignity() == deck[j].getCardDignity()) {
 
 					recordedDignityPositions[j] = true;
 
@@ -47,7 +47,7 @@ vector<int> estimation(vector<Card> v) {
 
 				if (i == 0 && countSameDignity == 1) {//to prevent unnecessary iterations
 												      //(flush and straight cannot exist if the deck already has pair/trinity/four)
-						if (v[i].getCardSuit() == v[j].getCardSuit()) {
+						if (deck[i].getCardSuit() == deck[j].getCardSuit()) {//counting flush
 							++countSameSuit;
 
 							cout << "Flush count " << countSameSuit << endl;
@@ -55,7 +55,8 @@ vector<int> estimation(vector<Card> v) {
 
 						}
 
-						if (v[j - 1].getCardDignity() == v[j].getCardDignity() - 1) { //mistake
+						if (deck[j - 1].getCardDignity() == deck[j].getCardDignity() - 1) { //counting straight
+																							//if previous card has dignity of the current card - 1, then count straight
 							++countStraight;
 
 							cout << "Straight count " << countStraight << endl;
@@ -89,7 +90,7 @@ vector<int> estimation(vector<Card> v) {
 
 			if (straight && flush) {
 
-				if (v[PLAYER_DECK_SIZE - 1].getCardDignity() == A) {
+				if (deck[PLAYER_DECK_SIZE - 1].getCardDignity() == A) {
 					combinationPoints[0] = ROYAL_FLUSH;
 					cout << "ROYAL FLUSH" << endl;
 					break;
@@ -150,11 +151,11 @@ vector<int> estimation(vector<Card> v) {
 
 		int maxDignity = 0;
 
-		for (int i = 0; i < v.size(); i++) {
+		for (int i = 0; i < deck.size(); i++) {
 
-			if (v[i].getCardDignity() > maxDignity) {
+			if (deck[i].getCardDignity() > maxDignity) {
 
-				maxDignity = v[i].getCardDignity();
+				maxDignity = deck[i].getCardDignity();
 
 			}
 
@@ -175,7 +176,14 @@ vector<int> estimation(vector<Card> v) {
 	cout << endl;
 
 	cout << "countSameDignity is " << countSameDignity << endl;
+	cout << "Combination points is " << combinationPoints[0] << endl;
 
 	return combinationPoints;
+
+}
+
+bool sortBySuit(Card c1, Card c2) {
+
+	return (c1.getCardSuit() < c2.getCardSuit());
 
 }

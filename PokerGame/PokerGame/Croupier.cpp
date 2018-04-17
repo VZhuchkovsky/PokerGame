@@ -5,6 +5,9 @@
 
 Croupier::Croupier(gameMode mode) {
 
+	currentLeader = {0, 0, 0, 0};//null pointers
+
+	//filling the main deck
 	mainDeck.push_back(Card(A, PEAKS));
 	mainDeck.push_back(Card(A, HEARTS));
 	mainDeck.push_back(Card(A, TAMBOURINES));
@@ -104,5 +107,63 @@ void Croupier::takeCardsBack(Player& player) {
 		player.getPlayerDiscard().pop_back();
 
 	}
+
+}
+
+void Croupier::scoring(Player& player) {
+
+	//set deck combination and deck elder dignity of the player according to estimation function 
+	player.setDeckCombination(estimation(player.getPlayerDeck())[0]);
+	player.setDeckElderDignity(estimation(player.getPlayerDeck())[1]);
+
+	for (int i = 0; i < currentLeader.size(); i++) {
+
+		if (!currentLeader[i]) {//if it is null pointer
+			currentLeader[i] = &player; //set pointer to player
+			break;
+		}
+		else {
+
+			if (currentLeader[i]->getDeckCombination() > player.getDeckCombination()) {//if current leader has greater combination than current player
+				cout << "Current leader remains with " << currentLeader[i]->getDeckCombination() << " points against " << player.getDeckCombination() << endl;
+				break;//in this case leader remains
+			}
+			else if (currentLeader[i]->getDeckCombination() < player.getDeckCombination()) {//if current leader has lesser combination than current player
+				cout << "Current leader loses with " << currentLeader[i]->getDeckCombination() << " points against " << player.getDeckCombination() << endl;
+				currentLeader[i] = &player;//then current player becomes current leader
+
+				if (currentLeader[i + 1]) {//if there were more than one previous current leader
+					//set all these pointers to null
+					for (int j = i + 1; j < currentLeader.size(); j++) {
+						currentLeader[j] = 0;
+					}
+
+				}
+
+				break;
+			}
+			else if (currentLeader[i]->getDeckCombination() == player.getDeckCombination()) {//if current leader has equal to current player combination 
+				//then compare their elder dignity
+				if (currentLeader[i]->getDeckElderDignity() > player.getDeckElderDignity()) {//if current leader has greater elder dignity than current player
+					cout << "Current leader remains with greater dignity, which is " << currentLeader[i]->getDeckElderDignity() << " against " << player.getDeckElderDignity() << endl;
+					break;//in this case leader remains
+				}
+				else if (currentLeader[i]->getDeckElderDignity() < player.getDeckElderDignity()) {//if current leader has lesser elder dignity than current player
+					cout << "Current leader loses with lesser dignity, which is " << currentLeader[i]->getDeckElderDignity() << " against " << player.getDeckElderDignity() << endl;
+					currentLeader[i] = &player;//then current player becomes current leader
+					break;
+				}
+				else if (currentLeader[i]->getDeckElderDignity() == player.getDeckElderDignity()) {//if current leader and current player are equal
+					cout << "Current leader and player are equal with: " << currentLeader[i]->getDeckCombination() << " " << player.getDeckCombination() << " and " << currentLeader[i]->getDeckElderDignity() << " " << player.getDeckElderDignity() << endl;
+					continue;//then progress to next iteration to set next pointer to current player
+				}
+
+			}
+
+		}
+
+	}
+
+	
 
 }

@@ -32,7 +32,7 @@ enum cardSuit {
 };
 
 enum combinations {
-	ONE_PAIR,
+	ONE_PAIR = 1,//0 represents no combination
 	TWO_PAIRS,
 	THREE_OF_A_KIND,
 	STRAIGHT,

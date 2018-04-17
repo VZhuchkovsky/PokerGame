@@ -43,3 +43,19 @@ void Player::show() {
 		std::cout << std::endl;
 	}
 }
+
+int Player::getDeckCombination() {
+	return deckCombination;
+}
+
+void Player::setDeckCombination(int c) {
+	deckCombination = c;
+}
+
+int Player::getDeckElderDignity() {
+	return deckElderDignity;
+}
+
+void Player::setDeckElderDignity(int ec) {
+	deckElderDignity = ec;
+}
