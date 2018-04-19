@@ -147,6 +147,7 @@
     <ClInclude Include="Card.h" />
     <ClInclude Include="Croupier.h" />
     <ClInclude Include="funcs.h" />
+    <ClInclude Include="GameUI.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="Player.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="Croupier.cpp" />
     <ClCompile Include="funcs.cpp" />
+    <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="Player.cpp" />

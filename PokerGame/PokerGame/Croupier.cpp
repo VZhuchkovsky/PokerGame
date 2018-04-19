@@ -120,6 +120,7 @@ void Croupier::scoring(Player& player) {
 
 		if (!currentLeader[i]) {//if it is null pointer
 			currentLeader[i] = &player; //set pointer to player
+			cout << "First leader." << endl;
 			break;
 		}
 		else {
@@ -164,6 +165,14 @@ void Croupier::scoring(Player& player) {
 
 	}
 
-	
+	/*cout << "QUANTITY OF CURRENT LEADERS: ";
+	int q = 0;
+	for (int i = 0; i < currentLeader.size(); i++) {
+		if (currentLeader[i]) {
+			++q;
+		}
+	}
+
+	cout << q << endl << endl;*/
 
 }
