@@ -1,11 +1,14 @@
 #include "Croupier.h"
-#include <iostream>
+
+#include <iostream>//for testing purpose
 #include <ctime>
 #include <algorithm>
+using std::cout;//for testing purpose
+using std::endl;//for testing purpose
 
-Croupier::Croupier(gameMode mode) {
+Croupier::Croupier() {
 
-	currentLeader = {0, 0, 0, 0};//null pointers
+	currentLeader = {nullptr, nullptr, nullptr, nullptr };//null pointers
 
 	//filling the main deck
 	mainDeck.push_back(Card(A, PEAKS));
@@ -44,24 +47,23 @@ Croupier::Croupier(gameMode mode) {
 	mainDeck.push_back(Card(SIX, HEARTS));
 	mainDeck.push_back(Card(SIX, TAMBOURINES));
 	mainDeck.push_back(Card(SIX, CLUBS));
-	if (mode == CLASSIC) {
-		mainDeck.push_back(Card(FIVE, PEAKS));
-		mainDeck.push_back(Card(FIVE, HEARTS));
-		mainDeck.push_back(Card(FIVE, TAMBOURINES));
-		mainDeck.push_back(Card(FIVE, CLUBS));
-		mainDeck.push_back(Card(FOUR, PEAKS));
-		mainDeck.push_back(Card(FOUR, HEARTS));
-		mainDeck.push_back(Card(FOUR, TAMBOURINES));
-		mainDeck.push_back(Card(FOUR, CLUBS));
-		mainDeck.push_back(Card(THREE, PEAKS));
-		mainDeck.push_back(Card(THREE, HEARTS));
-		mainDeck.push_back(Card(THREE, TAMBOURINES));
-		mainDeck.push_back(Card(THREE, CLUBS));
-		mainDeck.push_back(Card(TWO, PEAKS));
-		mainDeck.push_back(Card(TWO, HEARTS));
-		mainDeck.push_back(Card(TWO, TAMBOURINES));
-		mainDeck.push_back(Card(TWO, CLUBS));
-	}
+	mainDeck.push_back(Card(FIVE, PEAKS));
+	mainDeck.push_back(Card(FIVE, HEARTS));
+	mainDeck.push_back(Card(FIVE, TAMBOURINES));
+	mainDeck.push_back(Card(FIVE, CLUBS));
+	mainDeck.push_back(Card(FOUR, PEAKS));
+	mainDeck.push_back(Card(FOUR, HEARTS));
+	mainDeck.push_back(Card(FOUR, TAMBOURINES));
+	mainDeck.push_back(Card(FOUR, CLUBS));
+	mainDeck.push_back(Card(THREE, PEAKS));
+	mainDeck.push_back(Card(THREE, HEARTS));
+	mainDeck.push_back(Card(THREE, TAMBOURINES));
+	mainDeck.push_back(Card(THREE, CLUBS));
+	mainDeck.push_back(Card(TWO, PEAKS));
+	mainDeck.push_back(Card(TWO, HEARTS));
+	mainDeck.push_back(Card(TWO, TAMBOURINES));
+	mainDeck.push_back(Card(TWO, CLUBS));
+	
 
 }
 
@@ -120,17 +122,17 @@ void Croupier::scoring(Player& player) {
 
 		if (!currentLeader[i]) {//if it is null pointer
 			currentLeader[i] = &player; //set pointer to player
-			cout << "First leader." << endl;
+			//cout << "First leader." << endl;
 			break;
 		}
 		else {
 
 			if (currentLeader[i]->getDeckCombination() > player.getDeckCombination()) {//if current leader has greater combination than current player
-				cout << "Current leader remains with " << currentLeader[i]->getDeckCombination() << " points against " << player.getDeckCombination() << endl;
+				//cout << "Current leader remains with " << currentLeader[i]->getDeckCombination() << " points against " << player.getDeckCombination() << endl;
 				break;//in this case leader remains
 			}
 			else if (currentLeader[i]->getDeckCombination() < player.getDeckCombination()) {//if current leader has lesser combination than current player
-				cout << "Current leader loses with " << currentLeader[i]->getDeckCombination() << " points against " << player.getDeckCombination() << endl;
+				//cout << "Current leader loses with " << currentLeader[i]->getDeckCombination() << " points against " << player.getDeckCombination() << endl;
 				currentLeader[i] = &player;//then current player becomes current leader
 
 				if (currentLeader[i + 1]) {//if there were more than one previous current leader
@@ -146,16 +148,16 @@ void Croupier::scoring(Player& player) {
 			else if (currentLeader[i]->getDeckCombination() == player.getDeckCombination()) {//if current leader has equal to current player combination 
 				//then compare their elder dignity
 				if (currentLeader[i]->getDeckElderDignity() > player.getDeckElderDignity()) {//if current leader has greater elder dignity than current player
-					cout << "Current leader remains with greater dignity, which is " << currentLeader[i]->getDeckElderDignity() << " against " << player.getDeckElderDignity() << endl;
+					//cout << "Current leader remains with greater dignity, which is " << currentLeader[i]->getDeckElderDignity() << " against " << player.getDeckElderDignity() << endl;
 					break;//in this case leader remains
 				}
 				else if (currentLeader[i]->getDeckElderDignity() < player.getDeckElderDignity()) {//if current leader has lesser elder dignity than current player
-					cout << "Current leader loses with lesser dignity, which is " << currentLeader[i]->getDeckElderDignity() << " against " << player.getDeckElderDignity() << endl;
+					//cout << "Current leader loses with lesser dignity, which is " << currentLeader[i]->getDeckElderDignity() << " against " << player.getDeckElderDignity() << endl;
 					currentLeader[i] = &player;//then current player becomes current leader
 					break;
 				}
 				else if (currentLeader[i]->getDeckElderDignity() == player.getDeckElderDignity()) {//if current leader and current player are equal
-					cout << "Current leader and player are equal with: " << currentLeader[i]->getDeckCombination() << " " << player.getDeckCombination() << " and " << currentLeader[i]->getDeckElderDignity() << " " << player.getDeckElderDignity() << endl;
+					//cout << "Current leader and player are equal with: " << currentLeader[i]->getDeckCombination() << " " << player.getDeckCombination() << " and " << currentLeader[i]->getDeckElderDignity() << " " << player.getDeckElderDignity() << endl;
 					continue;//then progress to next iteration to set next pointer to current player
 				}
 
@@ -175,4 +177,9 @@ void Croupier::scoring(Player& player) {
 
 	cout << q << endl << endl;*/
 
+}
+
+vector<Player*> Croupier::getTheLeader()
+{
+	return currentLeader;
 }

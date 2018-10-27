@@ -1,9 +1,20 @@
 #include "Player.h"
-#include <iostream>
 
-Player::Player() {
+#include <iostream>
+using std::cout;//for testing purpose
+using std::endl;//for testing purpose
+
+
+Player::Player(string n) : name(n) {
 
 	playerDeck.reserve(PLAYER_DECK_SIZE);
+
+}
+
+Player::~Player()
+{
+
+	cout << "Player is deleted." << endl;
 
 }
 
@@ -11,11 +22,16 @@ vector<Card>& Player::getPlayerDeck() {
 	return playerDeck;
 }
 
-vector<Card>& Player::getPlayerDiscard() {
+/*vector<Card>& Player::getPlayerDiscard() {
 	return playerDiscard;
+}*/
+
+string Player::getName()
+{
+	return name;
 }
 
-void Player::splitTheDeck(vector<bool> positionsOfReturnedCards) {
+/*void Player::splitTheDeck(vector<bool> positionsOfReturnedCards) {
 
 	//positionsOfReturnedCards = chooseCardsToReturn();
 
@@ -35,7 +51,7 @@ void Player::splitTheDeck(vector<bool> positionsOfReturnedCards) {
 
 	}
 
-}
+}*/
 
 void Player::show() {
 	for (int i = 0; i < playerDeck.size(); i++) {
@@ -59,3 +75,5 @@ int Player::getDeckElderDignity() {
 void Player::setDeckElderDignity(int ec) {
 	deckElderDignity = ec;
 }
+
+void Player::setPlayerDiscard(vector<bool> positionsOfReturnedCards){}

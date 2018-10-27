@@ -1,12 +1,18 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-const int PLAYER_DECK_SIZE = 5;
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 
-enum gameMode {
+const int PLAYER_DECK_SIZE = 5;
+const int MAX_PLAYERS = 3;
+
+/*enum gameMode {
 	SMALL,
 	CLASSIC
-};
+};*/
 
 enum cardDignity {
 	TWO,
@@ -41,6 +47,13 @@ enum combinations {
 	FOUR_OF_A_KIND,
 	STRAIGHT_FLUSH,
 	ROYAL_FLUSH
+};
+
+//default names for AI players
+static vector<string> defaultNames = {
+	"McCree",
+	"Erron Black",
+	"Big Iron"
 };
 
 

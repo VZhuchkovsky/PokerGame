@@ -3,10 +3,19 @@
 
 #include "Player.h"
 
+#include <vector>
+using std::vector;
+
 class HumanPlayer : public Player {
 public:
-	HumanPlayer();
-	vector<bool> chooseCardsToReturn();
+	HumanPlayer(string n);
+	//vector<bool> setCardsToReturn();
+	vector<Card>& getPlayerDiscard();
+	void setPlayerDiscard(vector<bool> positionsOfReturnedCards);
+
+	void setPlayerDeck(vector<Card> c) {
+		playerDeck = c;
+	};
 };
 
 #endif __HUMAN_PLAYER__

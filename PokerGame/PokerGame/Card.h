@@ -8,6 +8,7 @@ class Card {
 public:
 	//Card();
 	Card(cardDignity d, cardSuit s);
+	~Card();
 	void show();//test function
 	cardDignity getCardDignity();
 	cardSuit getCardSuit();

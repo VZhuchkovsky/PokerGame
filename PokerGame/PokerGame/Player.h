@@ -1,30 +1,37 @@
 #ifndef __PLAYER__
 #define __PLAYER__
 
-#include <vector>
 #include "Card.h"
+
+#include <vector>
+#include <string>
 using std::vector;
+using std::string;
 
 class Player {
 public:
-	Player();
+	Player(string n);
+	~Player();
 	vector<Card>& getPlayerDeck();
-	vector<Card>& getPlayerDiscard();
-	virtual vector<bool> chooseCardsToReturn() = 0;
-	void splitTheDeck(vector<bool> positionsOfReturnedCards);
+	virtual vector<Card>& getPlayerDiscard() = 0;
+	string getName();
+	//virtual vector<bool> setCardsToReturn() = 0;
+	//void splitTheDeck(vector<bool> positionsOfReturnedCards);
 	void show();//test function
 	int getDeckCombination();//get deck's combination, estimated by Croupier
 	void setDeckCombination(int c);//set combination points
 	int getDeckElderDignity();//get elder card's dignity, estimated by Croupier
 	void setDeckElderDignity(int ec);//set elder card's dignity
+	virtual void setPlayerDiscard(vector<bool> positionsOfReturnedCards);//does nothing by default
 
 protected:
 	vector<Card> playerDeck;
+	vector<Card> playerDiscard;
 
 private:
-	vector<Card> playerDiscard;
 	int deckCombination;
 	int deckElderDignity;
+	string name;
 
 };
 

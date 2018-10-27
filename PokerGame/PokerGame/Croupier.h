@@ -5,19 +5,16 @@
 #include "funcs.h"
 #include "Player.h"
 
-#include <iostream>//for testing purpose
-using std::cout;//for testing purpose
-using std::endl;//for testing purpose
-
 class Croupier {
 public:
-	Croupier(gameMode mode);
+	Croupier();
 	void mix(); //randomizing cards' initial places
 	void giveCards(Player& player);//fill the player's deck
 	void takeCardsBack(Player& player);//return cards discarded by the player to the main deck
 	void show();//test function
 	void showSize();//test function
 	void scoring(Player& player);//scoring the player's result and comparing it with current leader
+	vector<Player*> getTheLeader();
 
 private:
 	vector<Card> mainDeck;

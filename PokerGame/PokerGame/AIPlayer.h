@@ -3,19 +3,20 @@
 
 #include "Player.h"
 #include "funcs.h"
-#include <algorithm>
-
-#include <iostream>//for testing purpose
-using std::cout;//for testing purpose
-using std::endl;//for testing purpose
 
 class AIPlayer : public Player {
 public:
-	AIPlayer();
-	vector<bool> chooseCardsToReturn();
+	AIPlayer(string n);
+	//vector<bool> setCardsToReturn();
+	vector<Card>& getPlayerDiscard();
+
+	void setPlayerDeck(vector<Card> c) {
+		playerDeck = c;
+	};
 
 private:
 	//const int riskRule = ROYAL_FLUSH / 2;//sample
+	bool checked; //if player's deck was already checked on points
 };
 
 #endif __AI_PLAYER__

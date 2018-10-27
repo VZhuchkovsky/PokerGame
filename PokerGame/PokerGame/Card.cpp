@@ -1,9 +1,17 @@
 #include "Card.h"
+
 #include <iostream>
+using std::cout;//for testing purpose
+using std::endl;//for testing purpose
 
 Card::Card(cardDignity d, cardSuit s) {
 	dignity = d;
 	suit = s;
+}
+
+Card::~Card()
+{
+	//cout << "Card " << dignity << " , " << suit << " is deleted" << endl;
 }
 
 cardDignity Card::getCardDignity() {
