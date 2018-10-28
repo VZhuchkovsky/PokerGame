@@ -11,8 +11,8 @@ public:
 	void mix(); //randomizing cards' initial places
 	void giveCards(Player& player);//fill the player's deck
 	void takeCardsBack(Player& player);//return cards discarded by the player to the main deck
-	void show();//test function
-	void showSize();//test function
+	//void show();//test function
+	//void showSize();//test function
 	void scoring(Player& player);//scoring the player's result and comparing it with current leader
 	vector<Player*> getTheLeader();
 

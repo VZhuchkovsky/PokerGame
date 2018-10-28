@@ -114,13 +114,6 @@ void GameUI::start() {
 
 	bool flag2 = true;
 
-	//test
-	//for (int i = 0; i < players.size(); i++) {
-
-		//cout << "Player " << i << " name is " << players[i]->getName() << endl;
-
-	//}
-
 	while (flag2) {
 
 		croupier->mix(); //mix the deck
@@ -158,8 +151,6 @@ void GameUI::start() {
 		for (int i = 0; i < players.size(); i++) {
 
 			if (typeid(*players[i]) == typeid(AIPlayer)) {
-
-				//croupier->takeCardsBack(*players[i]);
 
 				players[i]->getPlayerDiscard();
 
@@ -257,6 +248,9 @@ void GameUI::start() {
 
 		}
 
+		//reveal = true;
+
+		visualizeDiscardMark = false;
 		
 		//visualizing results
 		for (int i = 0; i < players.size(); i++) {
@@ -267,7 +261,7 @@ void GameUI::start() {
 			visualizeTheDeck(players[i]);
 
 		}
-		////////////////////////////////////////
+
 		cout << "Croupier's verdict: ";
 
 		int quantityOfWinners = 0;
@@ -278,11 +272,7 @@ void GameUI::start() {
 				++quantityOfWinners;
 			}
 
-			//cout << croupier->getTheLeader()[i]->getName() << "   ";
-
 		}
-
-		//cout << sz;
 
 		if (quantityOfWinners > 1) {
 
@@ -290,7 +280,7 @@ void GameUI::start() {
 
 			for (int i = 0; i < croupier->getTheLeader().size(); i++) {
 
-				if (croupier->getTheLeader()[i] != 0) {
+				if (croupier->getTheLeader()[i]) {
 					cout << croupier->getTheLeader()[i]->getName() << "   ";
 				}
 
@@ -360,17 +350,12 @@ void GameUI::visualizeTheDeck(Player * player){
 
 		for (int i = 0; i < player->getPlayerDeck().size(); i++) {
 
-
-			//if (typeid(*player) == typeid(HumanPlayer) && positionsOfCardsToReturn[i]) {
-			//}
-
-
-			//if (typeid(*player) == typeid(HumanPlayer)) {
+			if (typeid(*player) == typeid(HumanPlayer)) {
 				dignity = enumToString(player->getPlayerDeck()[i].getCardDignity());
-			//}
-			/*else {
+			}
+			else {
 				dignity = "*";
-			}*/
+			}
 
 
 			if (j == 0 || j == visualHeight - 1) {
@@ -401,12 +386,12 @@ void GameUI::visualizeTheDeck(Player * player){
 				cout << setw(2) << "|" << dignity << setw(visualWidth - (dignity.size() + 2)) << "|";
 
 			}
-			else if (positionsOfCardsToReturn[i] && j == 3) {
+			else if (typeid(*player) == typeid(HumanPlayer) && positionsOfCardsToReturn[i] && visualizeDiscardMark && j == 3) {
 
 				cout << setw(2) << "|" << setw(2) << "TO DISCARD" << setw(2) << "|";
 
 			}
-			else if (/*typeid(*player) == typeid(HumanPlayer) &&*/ j == 6) {
+			else if (typeid(*player) == typeid(HumanPlayer) && j == 6) {
 
 				cout << setw(2) << "|" << setw(visualWidth - 6) << enumToString(player->getPlayerDeck()[i].getCardSuit()) << setw(visualWidth - 10) << "|";
 

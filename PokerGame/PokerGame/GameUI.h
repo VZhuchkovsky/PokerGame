@@ -22,6 +22,8 @@ private:
 	const int visualWidth = 14, visualHeight = 12;
 
 	int getCurrentPointerPosition();
+	//bool reveal = false;
+	bool visualizeDiscardMark = true;
 	vector<bool> getPositionsOfCardsToReturn();
 	void nextPosition();
 	void previousPosition();

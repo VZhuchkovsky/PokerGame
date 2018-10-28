@@ -15,9 +15,7 @@ public:
 	vector<Card>& getPlayerDeck();
 	virtual vector<Card>& getPlayerDiscard() = 0;
 	string getName();
-	//virtual vector<bool> setCardsToReturn() = 0;
-	//void splitTheDeck(vector<bool> positionsOfReturnedCards);
-	void show();//test function
+	//void show();//test function
 	int getDeckCombination();//get deck's combination, estimated by Croupier
 	void setDeckCombination(int c);//set combination points
 	int getDeckElderDignity();//get elder card's dignity, estimated by Croupier

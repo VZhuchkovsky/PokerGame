@@ -7,7 +7,6 @@
 class AIPlayer : public Player {
 public:
 	AIPlayer(string n);
-	//vector<bool> setCardsToReturn();
 	vector<Card>& getPlayerDiscard();
 
 	void setPlayerDeck(vector<Card> c) {

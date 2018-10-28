@@ -1,9 +1,6 @@
 #include "AIPlayer.h"
 
 #include <algorithm>
-#include <iostream>//for testing purpose
-using std::cout;//for testing purpose
-using std::endl;//for testing purpose
 
 
 AIPlayer::AIPlayer(string n) : Player(n), checked(false) {};
@@ -14,7 +11,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 		return playerDiscard;
 	}
 
-	//cout << "If not checked..." << endl;//test
 
 	vector<bool> positionsOfReturnedCards(PLAYER_DECK_SIZE);//positions of cards to return
 									 //false - keep the card, true - discard the card
@@ -22,7 +18,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 
 	int currentEstimation = estimation(playerDeck)[0];
 
-	//if (currentEstimation < riskRule) {
 
 
 	if (currentEstimation <= THREE_OF_A_KIND) {
@@ -30,7 +25,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 
 		if (currentEstimation == 0) {//when player's deck has no combination
 
-			//cout << "currentEstimation == 0" << endl;
 
 			int countSameSuit = 1, countStraight = 1;
 
@@ -39,7 +33,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 			bool almostFlush = false;//true, if there are 4 cards of the same suit in the deck
 			int mostPopularSuit = 0;
 
-			//cout << "Entering the flush counting..." << endl;
 
 			for (int i = 0; i < playerDeck.size(); i++) {//counting flush
 
@@ -53,7 +46,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 
 			}
 
-			//cout << "There are " << countSameSuit << " cards with a same suit." << endl;
 
 			if (countSameSuit == PLAYER_DECK_SIZE - 1) {//if there are 4 cards of the same suit 
 														//P.S.: to make it possible to use the AI flush strategy with
@@ -66,7 +58,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 						//if card has suit, that is different from the most popular in the deck,
 						//than mark this card to discard.
 						positionsOfReturnedCards[i] = true;
-						cout << "D: " << playerDeck[i].getCardDignity() << "; S: " << playerDeck[i].getCardSuit() << endl;
 					}
 
 				}
@@ -78,7 +69,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 
 				positionsOfReturnedCards = { true, true, true , true, true };//mark all cards to discard
 
-				//cout << "Entering the straight counting..." << endl;
 
 				sort(playerDeck.begin(), playerDeck.end());//sort playerDeck by Dignity
 
@@ -88,7 +78,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 															 //it gives more points and, at the same time, more likely to be collected
 															 //(in the CLASSIC game mode at least).
 					if (playerDeck[i - 1].getCardDignity() == playerDeck[i].getCardDignity() - 1) {
-						//cout << playerDeck[i - 1].getCardDignity() << " is " << playerDeck[i].getCardDignity() << " - 1." << endl;
 						//if previous card has dignity of the current card - 1, then count straight
 						++countStraight;
 						//and dismark the cards
@@ -104,15 +93,12 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 
 				}
 
-				//cout << "Count straight is " << countStraight << endl;
 
 				if (countStraight != PLAYER_DECK_SIZE - 1) {//if there are less than 4 cards in the deck that make straight
 
 					for (int i = 0; i < positionsOfReturnedCards.size(); i++) {//then mark all cards int the deck to discard
 
-						//if (!positionsOfReturnedCards[i]) {
 							positionsOfReturnedCards[i] = true;
-						//}
 
 					}
 
@@ -150,14 +136,6 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 
 	checked = true; // set checked status
 
-	//}
-
-	cout << endl;
-	for (int i = 0; i < positionsOfReturnedCards.size(); i++) {
-		cout << positionsOfReturnedCards[i] << " ";
-	}
-	cout << endl;
-
 
 	for (int i = 0; i < positionsOfReturnedCards.size();) {
 
@@ -165,22 +143,13 @@ vector<Card>& AIPlayer::getPlayerDiscard() {
 
 		if (positionsOfReturnedCards[i]) {
 
-			//cout << "Position " << i << " is marked" << endl;
-			//cout << "Following card will be discarded" << endl;
-			//playerDeck[i].show();
-
 			playerDiscard.push_back(playerDeck[i]);
 
 			playerDeck.erase(playerDeck.begin() + i);
 
 			positionsOfReturnedCards.erase(positionsOfReturnedCards.begin() + i);
 
-			//cout << "Current size of pD:" << playerDeck.size() << endl;
-			//cout << "Current size of pOR:" <<  positionsOfReturnedCards.size() << endl;
-
 			i = 0;
-
-			//cout << "Final i is " << i << endl;
 
 		}
 		else {

@@ -9,7 +9,6 @@ using std::vector;
 class HumanPlayer : public Player {
 public:
 	HumanPlayer(string n);
-	//vector<bool> setCardsToReturn();
 	vector<Card>& getPlayerDiscard();
 	void setPlayerDiscard(vector<bool> positionsOfReturnedCards);
 
