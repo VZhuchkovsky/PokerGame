@@ -1,19 +1,22 @@
 #include "Player.h"
 
+#include <array>
 
-Player::Player(string n) : name(n) {
 
+Player::Player(string n) : name(n) 
+{
 	playerDeck.reserve(PLAYER_DECK_SIZE);
-
 }
 
-Player::~Player(){}
+Player::~Player()
+{}
 
-vector<Card>& Player::getPlayerDeck() {
+vector<Card>& Player::getPlayerDeck() 
+{
 	return playerDeck;
 }
 
-string Player::getName()
+string Player::getName() const
 {
 	return name;
 }
@@ -25,20 +28,25 @@ string Player::getName()
 	}
 }*/
 
-int Player::getDeckCombination() {
+int Player::getDeckCombination() const
+{
 	return deckCombination;
 }
 
-void Player::setDeckCombination(int c) {
+void Player::setDeckCombination(int c) 
+{
 	deckCombination = c;
 }
 
-int Player::getDeckElderDignity() {
+int Player::getDeckElderDignity() const
+{
 	return deckElderDignity;
 }
 
-void Player::setDeckElderDignity(int ec) {
+void Player::setDeckElderDignity(int ec) 
+{
 	deckElderDignity = ec;
 }
 
-void Player::setPlayerDiscard(vector<bool> positionsOfReturnedCards){}
+void Player::setPlayerDiscard(vector<bool> positionsOfReturnedCards)
+{}

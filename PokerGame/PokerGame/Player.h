@@ -14,11 +14,11 @@ public:
 	~Player();
 	vector<Card>& getPlayerDeck();
 	virtual vector<Card>& getPlayerDiscard() = 0;
-	string getName();
+	string getName() const;
 	//void show();//test function
-	int getDeckCombination();//get deck's combination, estimated by Croupier
+	int getDeckCombination() const;//get deck's combination, estimated by Croupier
 	void setDeckCombination(int c);//set combination points
-	int getDeckElderDignity();//get elder card's dignity, estimated by Croupier
+	int getDeckElderDignity() const;//get elder card's dignity, estimated by Croupier
 	void setDeckElderDignity(int ec);//set elder card's dignity
 	virtual void setPlayerDiscard(vector<bool> positionsOfReturnedCards);//does nothing by default
 

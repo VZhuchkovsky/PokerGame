@@ -1,12 +1,12 @@
 #include "Croupier.h"
 
+#include <iostream>
 #include <ctime>
 #include <algorithm>
 
-Croupier::Croupier() {
-
-	currentLeader = {nullptr, nullptr, nullptr, nullptr };//null pointers
-
+Croupier::Croupier() 
+{
+	std::cout << "***!Croupier created!***" << std::endl;
 	//filling the main deck
 	mainDeck.push_back(Card(A, PEAKS));
 	mainDeck.push_back(Card(A, HEARTS));
@@ -59,14 +59,24 @@ Croupier::Croupier() {
 	mainDeck.push_back(Card(TWO, PEAKS));
 	mainDeck.push_back(Card(TWO, HEARTS));
 	mainDeck.push_back(Card(TWO, TAMBOURINES));
-	mainDeck.push_back(Card(TWO, CLUBS));
-	
+	mainDeck.push_back(Card(TWO, CLUBS));	
 
 }
 
-void Croupier::mix() {
-	srand(std::time(0));
+Croupier::~Croupier()
+{
+	std::cout << "***!Croupier deleted!***" << std::endl;
+}
 
+Croupier & Croupier::getInstance()
+{
+	static Croupier instance;
+	return instance;
+}
+
+void Croupier::mix() 
+{
+	srand(std::time(0));
 	random_shuffle(mainDeck.begin(), mainDeck.end());
 }
 
@@ -83,85 +93,69 @@ void Croupier::mix() {
 	std::cout << "Main deck size is: " << mainDeck.size() << std::endl;
 }*/
 
-void Croupier::giveCards(Player& player) {
+void Croupier::giveCards(Player& player) 
+{
 
 	int lack = PLAYER_DECK_SIZE - player.getPlayerDeck().size();
 
-	for (int i = 0; i < lack; i++) {
-
+	for (int i = 0; i < lack; i++) 
+	{
 		player.getPlayerDeck().push_back(mainDeck.back());
-
 		mainDeck.pop_back();
-
 	}
 
 }
 
-void Croupier::takeCardsBack(Player& player) {
+void Croupier::takeCardsBack(Player& player) 
+{
 
-	for (; player.getPlayerDiscard().size();) {
-
+	for (; player.getPlayerDiscard().size();) 
+	{
 		mainDeck.push_back(player.getPlayerDiscard().back());
-
 		player.getPlayerDiscard().pop_back();
-
 	}
 
 }
 
-void Croupier::scoring(Player& player) {
+void Croupier::scoring(Player& player) 
+{
 
 	//set deck combination and deck elder dignity of the player according to estimation function 
 	player.setDeckCombination(estimation(player.getPlayerDeck())[0]);
 	player.setDeckElderDignity(estimation(player.getPlayerDeck())[1]);
 
-	for (int i = 0; i < currentLeader.size(); i++) {
-
-		if (!currentLeader[i]) {//if it is null pointer
-			currentLeader[i] = &player; //set pointer to player
-			break;
-		}
-		else {
-
-			if (currentLeader[i]->getDeckCombination() > player.getDeckCombination()) {//if current leader has greater combination than current player
-				break;//in this case leader remains
+		if (!currentLeader.size()) //if there are no possible winners yet
+			currentLeader.push_back(&player); //set pointer to player
+		else 
+		{
+			//if current leader has lesser combination than current player
+			if (currentLeader.front()->getDeckCombination() < player.getDeckCombination()) 
+			{
+				currentLeader.clear();//if there were more than one previous current leader - erase all pointers
+				currentLeader.push_back(&player);//then current player becomes current leader
 			}
-			else if (currentLeader[i]->getDeckCombination() < player.getDeckCombination()) {//if current leader has lesser combination than current player
-				currentLeader[i] = &player;//then current player becomes current leader
-
-				if (currentLeader[i + 1]) {//if there were more than one previous current leader
-					//set all these pointers to null
-					for (int j = i + 1; j < currentLeader.size(); j++) {
-						currentLeader[j] = 0;
-					}
-
-				}
-
-				break;
-			}
-			else if (currentLeader[i]->getDeckCombination() == player.getDeckCombination()) {//if current leader has equal to current player combination 
+			//if current leader has equal to current player combination 
+			else if (currentLeader.front()->getDeckCombination() == player.getDeckCombination()) 
+			{
 				//then compare their elder dignity
-				if (currentLeader[i]->getDeckElderDignity() > player.getDeckElderDignity()) {//if current leader has greater elder dignity than current player
-					break;//in this case leader remains
+				//if current leader has lesser elder dignity than current player
+				if (currentLeader.front()->getDeckElderDignity() < player.getDeckElderDignity()) 
+				{
+					currentLeader.clear();//if there were more than one previous current leader - erase all pointers
+					currentLeader.push_back(&player);//then current player becomes current leader
 				}
-				else if (currentLeader[i]->getDeckElderDignity() < player.getDeckElderDignity()) {//if current leader has lesser elder dignity than current player
-					currentLeader[i] = &player;//then current player becomes current leader
-					break;
-				}
-				else if (currentLeader[i]->getDeckElderDignity() == player.getDeckElderDignity()) {//if current leader and current player are equal
-					continue;//then progress to next iteration to set next pointer to current player
-				}
+				//if current leader and current player are equal
+				else if (currentLeader.front()->getDeckElderDignity() == player.getDeckElderDignity()) 
+					currentLeader.push_back(&player);
 
 			}
 
 		}
-
-	}
 
 
 }
 
-vector<Player*> Croupier::getTheLeader()
+vector<Player*> Croupier::getTheLeader() const
 {
 	return currentLeader;
 }

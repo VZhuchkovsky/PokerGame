@@ -9,9 +9,9 @@ public:
 	AIPlayer(string n);
 	vector<Card>& getPlayerDiscard();
 
-	void setPlayerDeck(vector<Card> c) {
+	/*void setPlayerDeck(vector<Card> c) {
 		playerDeck = c;
-	};
+	};*/
 
 private:
 	//const int riskRule = ROYAL_FLUSH / 2;//sample

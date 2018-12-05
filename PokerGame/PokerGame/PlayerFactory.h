@@ -3,10 +3,12 @@
 
 #include "Player.h"
 
+#include <memory>
+
 class PlayerFactory
 {
 public:
-	virtual Player* createPlayer(string name) = 0;
+	virtual std::shared_ptr<Player> createPlayer(string name) = 0;
 	virtual ~PlayerFactory();
 };
 

@@ -6,15 +6,16 @@
 #include <vector>
 using std::vector;
 
-class HumanPlayer : public Player {
+class HumanPlayer : public Player 
+{
 public:
 	HumanPlayer(string n);
 	vector<Card>& getPlayerDiscard();
 	void setPlayerDiscard(vector<bool> positionsOfReturnedCards);
 
-	void setPlayerDeck(vector<Card> c) {
+	/*void setPlayerDeck(vector<Card> c) {
 		playerDeck = c;
-	};
+	};*/
 };
 
 #endif __HUMAN_PLAYER__

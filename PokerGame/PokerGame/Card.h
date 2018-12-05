@@ -3,15 +3,14 @@
 
 #include "globals.h"
 
-class Card {
-
+class Card 
+{
 public:
-	//Card();
 	Card(cardDignity d, cardSuit s);
 	~Card();
-	void show();//test function
-	cardDignity getCardDignity();
-	cardSuit getCardSuit();
+	//void show();//test function
+	cardDignity getCardDignity() const;
+	cardSuit getCardSuit() const;
 	bool operator < (const Card& d) const;//to sort vector<Card> by dignity
 
 private:

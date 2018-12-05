@@ -1,10 +1,9 @@
 #include "AIPlayerFactory.h"
 
 
-
-Player * AIPlayerFactory::createPlayer(string name)
+std::shared_ptr<Player> AIPlayerFactory::createPlayer(string name)
 {
-	return new AIPlayer(name);
+	return std::shared_ptr<Player>(new AIPlayer(name));
 }
 
 AIPlayerFactory::~AIPlayerFactory()

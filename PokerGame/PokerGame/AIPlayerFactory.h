@@ -7,7 +7,7 @@
 class AIPlayerFactory : public PlayerFactory
 {
 public:
-	Player * createPlayer(string name);
+	std::shared_ptr<Player> createPlayer(string name);
 	~AIPlayerFactory();
 };
 

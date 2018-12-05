@@ -2,57 +2,51 @@
 
 #include <algorithm>
 
-vector<int> estimation(vector<Card> deck) {
+array<int,2> estimation(vector<Card> deck) {
 
 	sort(deck.begin(), deck.end());//sort vector<Card> by dignity from small to high
 
-	int countSameDignity = 1, countSameSuit = 1, countStraight = 1;
-	vector<int> combinationPoints{ 0,0 }; //points for the deck's combination; 
-										  //combinationPoints[0] represents combination of several cards (PAIR, FLUSH and etc.)
-										  //combinationPoints[1] represents the elder dignity
+	int countSameDignity = 1, countSameSuit = 1, countStraight = 1;// , elderCardInCombination = 0;
+	array<int,2> combinationPoints; //points for the deck's combination; 
+									//combinationPoints[0] represents combination of several cards (PAIR, FLUSH and etc.)
+									//combinationPoints[1] represents the elder dignity overall or 
+									//in combination i.e. PAIR, TWO PAIRS, THREE OF A KID, FOUR OF A KIND
+	combinationPoints.fill(0);//filling combination point
 	vector<bool> recordedDignityPositions(PLAYER_DECK_SIZE); //to mark cards with a same dignity
 	bool onePair = false, secondPair = false, trinity = false, flush = false, straight = false;
 
-	combinationPoints[1] = deck.back().getCardDignity();//last card in sorted deck has elder dignity
+	for (int i = 0; i < deck.size(); i++) 
+	{
 
-	for (int i = 0; i < deck.size(); i++) {
-
-		if (recordedDignityPositions[i]) {
+		if (recordedDignityPositions.at(i))
 			continue; //preventing unnecessary iterations
-		}
-		else {
-			recordedDignityPositions[i] = true;
-		}
+		else 
+			recordedDignityPositions.at(i) = true;
 
+		for (int j = 0; j < deck.size(); j++) 
+		{
 
-		for (int j = 0; j < deck.size(); j++) {
-
-			if (recordedDignityPositions[j]) {
+			if (recordedDignityPositions.at(j))
 				continue;
-			}
 
 			if (i != j) {
 
-				if (deck[i].getCardDignity() == deck[j].getCardDignity()) {
-
-					recordedDignityPositions[j] = true;
-
+				if (deck.at(i).getCardDignity() == deck.at(j).getCardDignity())
+				{
+					recordedDignityPositions.at(j) = true;
 					++countSameDignity;
-
+					//elder dignity in combination
+					if (countSameDignity > 1 && deck.at(i).getCardDignity() > combinationPoints.at(1))
+						combinationPoints.at(1) = deck.at(i).getCardDignity();
 				}
 
 				if (i == 0 && countSameDignity == 1) {//to prevent unnecessary iterations
 												      //(flush and straight cannot exist if the deck already has pair/trinity/four)
-						if (deck[i].getCardSuit() == deck[j].getCardSuit()) {//counting flush
+						if (deck.at(i).getCardSuit() == deck.at(j).getCardSuit()) //counting flush
 							++countSameSuit;
 
-						}
-
-						if (deck[j - 1].getCardDignity() == deck[j].getCardDignity() - 1) { //counting straight
-																							//if previous card has dignity of the current card - 1, then count straight
-							++countStraight;
-
-						}
+						if (deck.at(j - 1).getCardDignity() == deck.at(j).getCardDignity() - 1)  //counting straight
+							++countStraight; //if previous card has dignity of the current card - 1, then count straight
 
 				}
 
@@ -60,77 +54,92 @@ vector<int> estimation(vector<Card> deck) {
 
 		}
 
-		if (countSameSuit == 5) {
+		if (countSameSuit == 5) 
+		{
 			flush = true;
-			combinationPoints[0] = FLUSH;
+			combinationPoints.at(0) = FLUSH;
 		}
 
-		if (countStraight == 5) {
+		if (countStraight == 5) 
+		{
 			straight = true;
-			combinationPoints[0] = STRAIGHT;
+			combinationPoints.at(0) = STRAIGHT;
 		}
 
-		if (straight || flush) {
+		if (straight || flush) 
+		{
+			//elder dignity in combination
+			combinationPoints.at(1) = deck.back().getCardDignity();//last card in sorted deck has elder dignity
 
-			if (straight && flush) {
+			if (straight && flush) 
+			{
 
-				if (deck[PLAYER_DECK_SIZE - 1].getCardDignity() == A) {
-					combinationPoints[0] = ROYAL_FLUSH;
+				if (deck.at(PLAYER_DECK_SIZE - 1).getCardDignity() == A)
+				{
+					combinationPoints.at(0) = ROYAL_FLUSH;
 					break;
 				}
-				else {
-					combinationPoints[0] = STRAIGHT_FLUSH;
+				else 
+				{
+					combinationPoints.at(0) = STRAIGHT_FLUSH;
 					break;
 				}
 
 			}
-			else {
+
+			else 
+			{
 				break;
 			}
 
 		}
 
 
-		if (countSameDignity == 4) {
-			combinationPoints[0] = FOUR_OF_A_KIND;
+		if (countSameDignity == 4) 
+		{
+			combinationPoints.at(0) = FOUR_OF_A_KIND;
 			break;
 		}
 
-		if (countSameDignity == 3) {
+		if (countSameDignity == 3) 
+		{
 			trinity = true;
-			combinationPoints[0] = THREE_OF_A_KIND;
+			combinationPoints.at(0) = THREE_OF_A_KIND;
 		}
 
 		if (countSameDignity == 2) {
 			if (onePair) { //if the deck already has one pair
-				combinationPoints[0] = TWO_PAIRS;
+				combinationPoints.at(0) = TWO_PAIRS;
 				break;
-				//secondPair = true;
 			}
-			else {
+			else 
+			{
 				onePair = true;
-				combinationPoints[0] = ONE_PAIR;
+				combinationPoints.at(0) = ONE_PAIR;
 			}
 		}
 
-		if (onePair && trinity) {
-			combinationPoints[0] = FULL_HOUSE;
+		if (onePair && trinity) 
+		{
+			combinationPoints.at(0) = FULL_HOUSE;
 			break;
 		}
-
 
 		countSameDignity = 1;
 
 	}
 
+	//if there is no combination in the deck - mark the elder card
+	if (!combinationPoints.at(0))
+		combinationPoints.at(1) = deck.back().getCardDignity();//last card in sorted deck has elder dignity
+
 	return combinationPoints;
 
 }
 
-bool sortBySuit(Card c1, Card c2) {
-
+bool sortBySuit(Card c1, Card c2) 
+{
 	return (c1.getCardSuit() < c2.getCardSuit());
-
 }
 
 const string enumToString(cardDignity c)

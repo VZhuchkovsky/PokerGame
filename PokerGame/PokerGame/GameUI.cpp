@@ -1,6 +1,8 @@
 #include "GameUI.h"
 
+#include <array>
 #include <vector>
+#include <array>
 #include <iostream>
 #include <iomanip> 
 #include <cassert>
@@ -16,38 +18,19 @@ using std::setw;
 using std::this_thread::sleep_for;
 //using std::string;
 
-GameUI::GameUI():currentPointerPosition(0) {
-
+GameUI::GameUI():currentPointerPosition(0), revealAIDeck(false), visualizeDiscardMark(true), croupier(Croupier::getInstance())
+{
 	positionsOfCardsToReturn = { false, false, false, false, false };
-
-	croupier = new Croupier;
-	aiFactory = new AIPlayerFactory;
-	humanFactory = new HumanPlayerFactory;
-	
-
 }
 
 GameUI::~GameUI()
+{}
+
+
+void GameUI::start() 
 {
-
-	delete croupier;
-	delete aiFactory;
-	delete humanFactory;
-
-	for (int i = 0; i < players.size(); i++) {
-
-		cout << "Player " << i << "is deleted." << endl; //test
-		delete players[i];
-
-	}
-
-}
-
-
-void GameUI::start() {
-
 	cout << "Welcome to PokerGame! \nPlease, type your name: ";
-	
+
 	string currentPlayerName;
 	cin >> currentPlayerName;
 	cout << endl;
@@ -55,24 +38,18 @@ void GameUI::start() {
 	bool flag1 = true;
 	int numberOfRivals = 0;
 
-	while (flag1) {
-
+	while (flag1) 
+	{
 		cout << "How many rivals do you want? Please insert number (1-3): ";
 		cin >> numberOfRivals;
 
-		if (numberOfRivals > 0 && numberOfRivals <= MAX_PLAYERS) {
-			
-			flag1 = false;
+		if (numberOfRivals > 0 && numberOfRivals <= MAX_PLAYERS) flag1 = false;
 
-		}
-		else {
-
+		else 
+		{
 			system("cls");
-
 			cout << "Oops! It seems your input was incorrect. Please, try again." << endl;
-
 		}
-
 	}
 
 	assert(numberOfRivals > 0 && numberOfRivals <= MAX_PLAYERS); // additional verification
@@ -87,20 +64,15 @@ void GameUI::start() {
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(1400)); // sleep
 
-
-
 	//creating AI player(s)
-	for (int i = 0; i < numberOfRivals; i++) {
-
+	for (int i = 0; i < numberOfRivals; i++) 
+	{
 		assert(i < defaultNames.size()); // additional verification
-
-		players.push_back(aiFactory->createPlayer(defaultNames[i]));
-
+		assert(!defaultNames.at(i).empty()); // additional verification
+		players.push_back(aiFactory.createPlayer(defaultNames.at(i)));
 	}
 
-	players.push_back(humanFactory->createPlayer(currentPlayerName)); //creating human player
-
-
+	players.push_back(humanFactory.createPlayer(currentPlayerName)); //creating human player
 
 	cout  << players.size() << " players in game." << endl;//test
 
@@ -114,19 +86,15 @@ void GameUI::start() {
 
 	bool flag2 = true;
 
-	while (flag2) {
-
-		croupier->mix(); //mix the deck
-
+	while (flag2) 
+	{
+		croupier.mix(); //mix the deck
 		//give cards to each player and visualizing their decks
-		for (int i = 0; i < players.size(); i++) {
-
-			croupier->giveCards(*players[i]);
-
+		for (int i = 0; i < players.size(); i++) 
+		{
+			croupier.giveCards(*players[i]);
 			cout << players[i]->getName() << "'s deck" << endl;
-
 			visualizeTheDeck(players[i]);
-
 		}
 
 		cout << setw(10) << "Press SPACE to continue" << endl;
@@ -135,93 +103,72 @@ void GameUI::start() {
 
 		int pressedButton;
 
-		while (flag3) {
-
+		while (flag3) 
+		{
 			pressedButton = _getch();
 			//space button pressed
-			if (pressedButton == 32) {
+			if (pressedButton == 32) 
+			{
 				system("cls");
 				flag3 = false;
 			}
-
 		}
 
-
 		//AI discard cycle
-		for (int i = 0; i < players.size(); i++) {
-
-			if (typeid(*players[i]) == typeid(AIPlayer)) {
-
-				players[i]->getPlayerDiscard();
-
-			}
-
+		for (int i = 0; i < players.size(); i++) 
+		{
+			if (typeid(*players[i]) == typeid(AIPlayer)) players[i]->getPlayerDiscard();
 		}
 
 		//visualizing decks and human discard cycle
 		bool flag4 = true;
 
-		while (flag4) {
-
-			for (int i = 0; i < players.size(); i++) {
-
-				if (typeid(*players[i]) == typeid(AIPlayer)) {
-
+		while (flag4) 
+		{
+			for (int i = 0; i < players.size(); i++) 
+			{
+				if (typeid(*players[i]) == typeid(AIPlayer)) 
+				{
 					int currentDeckSize = players[i]->getPlayerDeck().size();
 
-					if (currentDeckSize == PLAYER_DECK_SIZE) {
-
+					if (currentDeckSize == PLAYER_DECK_SIZE) 
 						cout << players[i]->getName() << " stays with current deck." << endl;
-
-					}
-					else if (currentDeckSize ==  0) {
-
+					else if (currentDeckSize ==  0) 
+					{
 						cout << players[i]->getName() << " returned the whole deck." << endl;
-
-						for (int j = 0; j < visualHeight; j++) {
-							cout << endl;
-						}
-
+						for (int j = 0; j < visualHeight; j++) cout << endl;
 					}
-					else {
-
-						cout << players[i]->getName() << " has returned " << PLAYER_DECK_SIZE - currentDeckSize << " cards." << endl;
-
-					}
+					else cout << players[i]->getName() << " has returned " << PLAYER_DECK_SIZE - currentDeckSize << " cards." << endl;
 
 					visualizeTheDeck(players[i]);
-
 				}
-				else {
-
+				else 
+				{
 					cout << "Choose cards to discard: " << endl;
-
 					visualizeTheDeck(players[i]);
-
 					visualizeThePointer(players[i]);
-
 					cout << "Press SPACE to confirm discard." << endl;
-
 					pressedButton = _getch();
 
-					if (pressedButton == 32) {
-
+					if (pressedButton == 32) 
+					{
 						players[i]->setPlayerDiscard(getPositionsOfCardsToReturn());
-
 						//croupier->takeCardsBack(*players[i]);
 
 						flag4 = false;
-
 					}
-					else if (pressedButton == 75) {
+					else if (pressedButton == 75) 
+					{
 						previousPosition();
 						break;
 					}
-					else if (pressedButton == 77) {
+					else if (pressedButton == 77) 
+					{
 						nextPosition();
 						break;
 					}
-					else if (pressedButton == 13) {
+					else if (pressedButton == 13) 
+					{
 						markPosition();
 						break;
 					}
@@ -238,62 +185,54 @@ void GameUI::start() {
 
 
 
-		for (int i = 0; i < players.size(); i++) {
-
-			croupier->giveCards(*players[i]); //giving missing cards
-
-			croupier->takeCardsBack(*players[i]); //returning cards to the main deck
-
-			croupier->scoring(*players[i]); //scoring
-
+		for (int i = 0; i < players.size(); i++) 
+		{
+			croupier.giveCards(*players[i]); //giving missing cards
+			croupier.takeCardsBack(*players[i]); //returning cards to the main deck
+			croupier.scoring(*players[i]); //scoring
 		}
 
 		//reveal = true;
 
+		//hide discard mark
 		visualizeDiscardMark = false;
 		
+		//reveal AI deck
+		revealAIDeck = true;
+
 		//visualizing results
-		for (int i = 0; i < players.size(); i++) {
-
-			cout << players[i]->getName() << "'s results: Combination - " << combinationToString(players[i]->getDeckCombination()) << 
-				", Elder Card - " << dignityToString(players[i]->getDeckElderDignity()) << endl;
-
-			visualizeTheDeck(players[i]);
-
+		for (int i = 0; i < players.size(); i++) 
+		{
+			cout << players.at(i)->getName() << "'s results: Combination - " << combinationToString(players.at(i)->getDeckCombination());
+			cout <<	", Elder Card - " << dignityToString(players.at(i)->getDeckElderDignity()) << endl;
+			visualizeTheDeck(players.at(i));
 		}
 
 		cout << "Croupier's verdict: ";
 
 		int quantityOfWinners = 0;
 
-		for (int i = 0; i < croupier->getTheLeader().size(); i++) {
-
-			if (croupier->getTheLeader()[i] != 0) {
+		for (int i = 0; i < croupier.getTheLeader().size(); i++) 
+		{
+			if (croupier.getTheLeader()[i] != 0) 
 				++quantityOfWinners;
-			}
-
 		}
 
-		if (quantityOfWinners > 1) {
-
+		if (quantityOfWinners > 1) 
+		{
 			cout << "There are several winners: ";
 
-			for (int i = 0; i < croupier->getTheLeader().size(); i++) {
-
-				if (croupier->getTheLeader()[i]) {
-					cout << croupier->getTheLeader()[i]->getName() << "   ";
-				}
-
+			for (int i = 0; i < croupier.getTheLeader().size(); i++) 
+			{
+				if (croupier.getTheLeader()[i])
+					cout << croupier.getTheLeader()[i]->getName() << "   ";
 			}
 
 			cout << endl;
 
 		}
-		else {
-
-			cout << croupier->getTheLeader()[0]->getName() << " is victorious!" << endl;
-
-		}
+		else
+			cout << croupier.getTheLeader()[0]->getName() << " is victorious!" << endl;
 
 		flag2 = false;
 
@@ -301,115 +240,83 @@ void GameUI::start() {
 
 }
 
-int GameUI::getCurrentPointerPosition(){
-
+int GameUI::getCurrentPointerPosition()
+{
 	return currentPointerPosition;
-
 }
 
-vector<bool> GameUI::getPositionsOfCardsToReturn(){
-
+vector<bool> GameUI::getPositionsOfCardsToReturn() const
+{
 	return positionsOfCardsToReturn;
-
 }
 
-void GameUI::nextPosition(){
-
+void GameUI::nextPosition()
+{
 	//place asserts
-	if (currentPointerPosition == PLAYER_DECK_SIZE - 1) {
+	if (currentPointerPosition == PLAYER_DECK_SIZE - 1) 
 		currentPointerPosition = 0;
-	}
-	else {
+	else 
 		++currentPointerPosition;
-	}
-
 }
 
-void GameUI::previousPosition(){
+void GameUI::previousPosition()
+{
 
-	if (currentPointerPosition == 0) {
+	if (currentPointerPosition == 0)
 		currentPointerPosition = PLAYER_DECK_SIZE - 1;
-	}
-	else {
+	else 
 		--currentPointerPosition;
-	}
 
 }
 
-void GameUI::markPosition(){
-
+void GameUI::markPosition()
+{
 	positionsOfCardsToReturn[currentPointerPosition] = !positionsOfCardsToReturn[currentPointerPosition];
-
 }
 
-void GameUI::visualizeTheDeck(Player * player){
+void GameUI::visualizeTheDeck(std::shared_ptr<Player> player)
+{
 
 	string dignity;
 
-	for (int j = 0; j < visualHeight; j++) {
+	for (int j = 0; j < visualHeight; j++) 
+	{
 
-		for (int i = 0; i < player->getPlayerDeck().size(); i++) {
+		for (int i = 0; i < player->getPlayerDeck().size(); i++) 
+		{
 
-			if (typeid(*player) == typeid(HumanPlayer)) {
+			if (typeid(*player) == typeid(HumanPlayer) || 
+				(typeid(*player) == typeid(AIPlayer) && revealAIDeck))
 				dignity = enumToString(player->getPlayerDeck()[i].getCardDignity());
-			}
-			else {
+			else 
 				dignity = "*";
-			}
 
 
-			if (j == 0 || j == visualHeight - 1) {
-
-				for (int k = 0; k <= visualHeight; k++) {
-
-					if (k == 0) {
-
+			if (j == 0 || j == visualHeight - 1) 
+			{
+				for (int k = 0; k <= visualHeight; k++) 
+				{
+					if (k == 0)
 						cout << setw(2) << " ";
-
-					}
-					else if (k == visualHeight) {
-
+					else if (k == visualHeight)
 						cout << " ";
-
-					}
-					else {
-
+					else
 						cout << "-";
-
-					}
-
 				}
-
 			}
-			else if (j == 1) {
-
+			else if (j == 1)
 				cout << setw(2) << "|" << dignity << setw(visualWidth - (dignity.size() + 2)) << "|";
-
-			}
-			else if (typeid(*player) == typeid(HumanPlayer) && positionsOfCardsToReturn[i] && visualizeDiscardMark && j == 3) {
-
+			else if (typeid(*player) == typeid(HumanPlayer) && positionsOfCardsToReturn[i] && visualizeDiscardMark && j == 3) 
 				cout << setw(2) << "|" << setw(2) << "TO DISCARD" << setw(2) << "|";
-
-			}
-			else if (typeid(*player) == typeid(HumanPlayer) && j == 6) {
-
+			else if (j == 6 && (typeid(*player) == typeid(HumanPlayer) || (typeid(*player) == typeid(AIPlayer) && revealAIDeck)))
 				cout << setw(2) << "|" << setw(visualWidth - 6) << enumToString(player->getPlayerDeck()[i].getCardSuit()) << setw(visualWidth - 10) << "|";
-
-			}
-			else if (j == visualHeight - 2) {
-
+			else if (j == visualHeight - 2)
 				cout << setw(2) << "|" << setw(visualWidth - 3) << dignity << "|";
-
-			}
-			else {
-
+			else 
 				cout << setw(2) << "|" << setw(visualWidth - 2) << "|";
 
-			}
-
-			if (i == player->getPlayerDeck().size() - 1) {
+			if (i == player->getPlayerDeck().size() - 1)
 				cout << endl;
-			}
 
 		}
 
@@ -419,12 +326,10 @@ void GameUI::visualizeTheDeck(Player * player){
 
 }
 
-void GameUI::visualizeThePointer(Player * player){
+void GameUI::visualizeThePointer(std::shared_ptr<Player> player)
+{
 
-	if (typeid(*player) == typeid(HumanPlayer)) {
-
+	if (typeid(*player) == typeid(HumanPlayer)) 
 		cout << setw((visualWidth / 2) * 2 * currentPointerPosition + 9) << "/\\" << endl;
-
-	}
 
 }
