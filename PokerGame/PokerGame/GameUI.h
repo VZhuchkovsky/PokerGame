@@ -14,12 +14,10 @@ public:
 	void start();
 private:
 	Croupier& croupier;
-	AIPlayerFactory aiFactory;
-	HumanPlayerFactory humanFactory;
 	vector<std::shared_ptr<Player>> players;
 	int currentPointerPosition; //doubly connected ring list's basis
 	vector<bool> positionsOfCardsToReturn; //positions of cards to be discarded
-	const int visualWidth = 14, visualHeight = 12;
+	//const int visualWidth = 14, visualHeight = 12;
 
 	int getCurrentPointerPosition();
 	bool revealAIDeck;

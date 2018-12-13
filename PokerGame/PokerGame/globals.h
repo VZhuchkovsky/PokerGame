@@ -6,8 +6,12 @@
 using std::string;
 using std::vector;
 
+const int COMBINATION = 0;//first element of estimation's result
+const int ELDER_DIGNITY = 1;//second element of estimation's result
 const int PLAYER_DECK_SIZE = 5;
-const int MAX_PLAYERS = 3;
+const int MAX_PLAYERS = 3;//there cannot be more than 3 AI players
+const int VISUAL_HEIGHT = 12;
+const int VISUAL_WIDTH = 14;
 
 /*enum gameMode {
 	SMALL,
@@ -49,12 +53,4 @@ enum combinations {
 	ROYAL_FLUSH
 };
 
-//default names for AI players
-static vector<string> defaultNames = {
-	"McCree",
-	"Erron Black",
-	"Big Iron"
-};
-
-
-#endif // __GLOBALS_H__
+#endif  __GLOBALS_H__

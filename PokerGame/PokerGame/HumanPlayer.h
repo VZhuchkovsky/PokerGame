@@ -4,14 +4,13 @@
 #include "Player.h"
 
 #include <vector>
-using std::vector;
 
 class HumanPlayer : public Player 
 {
 public:
 	HumanPlayer(string n);
-	vector<Card>& getPlayerDiscard();
-	void setPlayerDiscard(vector<bool> positionsOfReturnedCards);
+	std::vector<unique_ptr<Card>>& getPlayerDiscard() override;
+	void setPlayerDiscard(std::vector<bool> positionsOfReturnedCards) override;
 
 	/*void setPlayerDeck(vector<Card> c) {
 		playerDeck = c;

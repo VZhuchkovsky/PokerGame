@@ -7,7 +7,7 @@
 class HumanPlayerFactory
 {
 public:
-	std::shared_ptr<Player> createPlayer(string name);
+	static std::shared_ptr<Player> createPlayer(string name);
 	~HumanPlayerFactory();
 };
 

@@ -7,8 +7,11 @@
 class AIPlayerFactory : public PlayerFactory
 {
 public:
-	std::shared_ptr<Player> createPlayer(string name);
+	static std::shared_ptr<Player> createPlayer(string name = defaultNames.at(AIPlayer::getCurrentName()));
 	~AIPlayerFactory();
+
+private:
+	static const vector<string> defaultNames;//default names for AI players
 };
 
 #endif __AI_PLAYER_FACTORY__

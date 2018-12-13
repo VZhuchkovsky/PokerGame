@@ -2,7 +2,6 @@
 
 #include <array>
 #include <vector>
-#include <array>
 #include <iostream>
 #include <iomanip> 
 #include <cassert>
@@ -24,16 +23,42 @@ GameUI::GameUI():currentPointerPosition(0), revealAIDeck(false), visualizeDiscar
 }
 
 GameUI::~GameUI()
-{}
+{
+}
 
 
 void GameUI::start() 
 {
-	cout << "Welcome to PokerGame! \nPlease, type your name: ";
+	cout << "Welcome to PokerGame!" << endl;
 
+	bool flag0 = true;
 	string currentPlayerName;
-	cin >> currentPlayerName;
-	cout << endl;
+
+	while (flag0) {
+
+		cout << "Please, type your name: ";
+		cin >> currentPlayerName;
+		cout << endl;
+
+		for (int i = 0; i < currentPlayerName.size(); i++) {
+
+			if (!(((int)currentPlayerName.at(i) >= 65 && (int)currentPlayerName.at(i) <= 90) ||
+				((int)currentPlayerName.at(i) >= 97 && (int)currentPlayerName.at(i) <= 122)))
+			{
+				system("cls");
+				cout << "Oops! It seems your input was incorrect. Please, try again and use only English letters." << endl;
+				break;
+			}
+			else if (i == currentPlayerName.size() - 1)
+			{
+				flag0 = false;
+			}
+
+		}
+
+	}
+
+	system("cls");
 
 	bool flag1 = true;
 	int numberOfRivals = 0;
@@ -67,12 +92,10 @@ void GameUI::start()
 	//creating AI player(s)
 	for (int i = 0; i < numberOfRivals; i++) 
 	{
-		assert(i < defaultNames.size()); // additional verification
-		assert(!defaultNames.at(i).empty()); // additional verification
-		players.push_back(aiFactory.createPlayer(defaultNames.at(i)));
+		players.push_back(AIPlayerFactory::createPlayer());
 	}
 
-	players.push_back(humanFactory.createPlayer(currentPlayerName)); //creating human player
+	players.push_back(HumanPlayerFactory::createPlayer(currentPlayerName)); //creating human player
 
 	cout  << players.size() << " players in game." << endl;//test
 
@@ -92,9 +115,9 @@ void GameUI::start()
 		//give cards to each player and visualizing their decks
 		for (int i = 0; i < players.size(); i++) 
 		{
-			croupier.giveCards(*players[i]);
-			cout << players[i]->getName() << "'s deck" << endl;
-			visualizeTheDeck(players[i]);
+			croupier.giveCards(*players.at(i));
+			cout << players.at(i)->getName() << "'s deck" << endl;
+			visualizeTheDeck(players.at(i));
 		}
 
 		cout << setw(10) << "Press SPACE to continue" << endl;
@@ -117,7 +140,7 @@ void GameUI::start()
 		//AI discard cycle
 		for (int i = 0; i < players.size(); i++) 
 		{
-			if (typeid(*players[i]) == typeid(AIPlayer)) players[i]->getPlayerDiscard();
+			if (typeid(*players.at(i)) == typeid(AIPlayer)) players.at(i)->getPlayerDiscard();
 		}
 
 		//visualizing decks and human discard cycle
@@ -127,32 +150,32 @@ void GameUI::start()
 		{
 			for (int i = 0; i < players.size(); i++) 
 			{
-				if (typeid(*players[i]) == typeid(AIPlayer)) 
+				if (typeid(*players.at(i)) == typeid(AIPlayer))
 				{
-					int currentDeckSize = players[i]->getPlayerDeck().size();
+					int currentDeckSize = players.at(i)->getPlayerDeck().size();
 
 					if (currentDeckSize == PLAYER_DECK_SIZE) 
-						cout << players[i]->getName() << " stays with current deck." << endl;
+						cout << players.at(i)->getName() << " stays with current deck." << endl;
 					else if (currentDeckSize ==  0) 
 					{
-						cout << players[i]->getName() << " returned the whole deck." << endl;
-						for (int j = 0; j < visualHeight; j++) cout << endl;
+						cout << players.at(i)->getName() << " returned the whole deck." << endl;
+						for (int j = 0; j < VISUAL_HEIGHT; j++) cout << endl;
 					}
-					else cout << players[i]->getName() << " has returned " << PLAYER_DECK_SIZE - currentDeckSize << " cards." << endl;
+					else cout << players.at(i)->getName() << " has returned " << PLAYER_DECK_SIZE - currentDeckSize << " cards." << endl;
 
-					visualizeTheDeck(players[i]);
+					visualizeTheDeck(players.at(i));
 				}
 				else 
 				{
 					cout << "Choose cards to discard: " << endl;
-					visualizeTheDeck(players[i]);
-					visualizeThePointer(players[i]);
+					visualizeTheDeck(players.at(i));
+					visualizeThePointer(players.at(i));
 					cout << "Press SPACE to confirm discard." << endl;
 					pressedButton = _getch();
 
 					if (pressedButton == 32) 
 					{
-						players[i]->setPlayerDiscard(getPositionsOfCardsToReturn());
+						players.at(i)->setPlayerDiscard(getPositionsOfCardsToReturn());
 						//croupier->takeCardsBack(*players[i]);
 
 						flag4 = false;
@@ -187,9 +210,9 @@ void GameUI::start()
 
 		for (int i = 0; i < players.size(); i++) 
 		{
-			croupier.giveCards(*players[i]); //giving missing cards
-			croupier.takeCardsBack(*players[i]); //returning cards to the main deck
-			croupier.scoring(*players[i]); //scoring
+			croupier.giveCards(*players.at(i)); //giving missing cards
+			croupier.takeCardsBack(*players.at(i)); //returning cards to the main deck
+			croupier.scoring(*players.at(i)); //scoring
 		}
 
 		//reveal = true;
@@ -214,7 +237,7 @@ void GameUI::start()
 
 		for (int i = 0; i < croupier.getTheLeader().size(); i++) 
 		{
-			if (croupier.getTheLeader()[i] != 0) 
+			if (croupier.getTheLeader().at(i) != 0)
 				++quantityOfWinners;
 		}
 
@@ -224,15 +247,15 @@ void GameUI::start()
 
 			for (int i = 0; i < croupier.getTheLeader().size(); i++) 
 			{
-				if (croupier.getTheLeader()[i])
-					cout << croupier.getTheLeader()[i]->getName() << "   ";
+				if (croupier.getTheLeader().at(i))
+					cout << croupier.getTheLeader().at(i)->getName() << "   ";
 			}
 
 			cout << endl;
 
 		}
 		else
-			cout << croupier.getTheLeader()[0]->getName() << " is victorious!" << endl;
+			cout << croupier.getTheLeader().at(0)->getName() << " is victorious!" << endl;
 
 		flag2 = false;
 
@@ -279,7 +302,7 @@ void GameUI::visualizeTheDeck(std::shared_ptr<Player> player)
 
 	string dignity;
 
-	for (int j = 0; j < visualHeight; j++) 
+	for (int j = 0; j < VISUAL_HEIGHT; j++)
 	{
 
 		for (int i = 0; i < player->getPlayerDeck().size(); i++) 
@@ -287,33 +310,33 @@ void GameUI::visualizeTheDeck(std::shared_ptr<Player> player)
 
 			if (typeid(*player) == typeid(HumanPlayer) || 
 				(typeid(*player) == typeid(AIPlayer) && revealAIDeck))
-				dignity = enumToString(player->getPlayerDeck()[i].getCardDignity());
+				dignity = enumToString(player->getPlayerDeck().at(i)->getCardDignity());
 			else 
 				dignity = "*";
 
 
-			if (j == 0 || j == visualHeight - 1) 
+			if (j == 0 || j == VISUAL_HEIGHT - 1)
 			{
-				for (int k = 0; k <= visualHeight; k++) 
+				for (int k = 0; k <= VISUAL_HEIGHT; k++)
 				{
 					if (k == 0)
 						cout << setw(2) << " ";
-					else if (k == visualHeight)
+					else if (k == VISUAL_HEIGHT)
 						cout << " ";
 					else
 						cout << "-";
 				}
 			}
 			else if (j == 1)
-				cout << setw(2) << "|" << dignity << setw(visualWidth - (dignity.size() + 2)) << "|";
-			else if (typeid(*player) == typeid(HumanPlayer) && positionsOfCardsToReturn[i] && visualizeDiscardMark && j == 3) 
+				cout << setw(2) << "|" << dignity << setw(VISUAL_WIDTH - (dignity.size() + 2)) << "|";
+			else if (typeid(*player) == typeid(HumanPlayer) && positionsOfCardsToReturn.at(i) && visualizeDiscardMark && j == 3)
 				cout << setw(2) << "|" << setw(2) << "TO DISCARD" << setw(2) << "|";
 			else if (j == 6 && (typeid(*player) == typeid(HumanPlayer) || (typeid(*player) == typeid(AIPlayer) && revealAIDeck)))
-				cout << setw(2) << "|" << setw(visualWidth - 6) << enumToString(player->getPlayerDeck()[i].getCardSuit()) << setw(visualWidth - 10) << "|";
-			else if (j == visualHeight - 2)
-				cout << setw(2) << "|" << setw(visualWidth - 3) << dignity << "|";
+				cout << setw(2) << "|" << setw(VISUAL_WIDTH - 6) << enumToString(player->getPlayerDeck().at(i)->getCardSuit()) << setw(VISUAL_WIDTH - 10) << "|";
+			else if (j == VISUAL_HEIGHT - 2)
+				cout << setw(2) << "|" << setw(VISUAL_WIDTH - 3) << dignity << "|";
 			else 
-				cout << setw(2) << "|" << setw(visualWidth - 2) << "|";
+				cout << setw(2) << "|" << setw(VISUAL_WIDTH - 2) << "|";
 
 			if (i == player->getPlayerDeck().size() - 1)
 				cout << endl;
@@ -330,6 +353,6 @@ void GameUI::visualizeThePointer(std::shared_ptr<Player> player)
 {
 
 	if (typeid(*player) == typeid(HumanPlayer)) 
-		cout << setw((visualWidth / 2) * 2 * currentPointerPosition + 9) << "/\\" << endl;
+		cout << setw((VISUAL_WIDTH / 2) * 2 * currentPointerPosition + 9) << "/\\" << endl;
 
 }

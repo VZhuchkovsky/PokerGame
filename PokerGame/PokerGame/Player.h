@@ -4,17 +4,19 @@
 #include "Card.h"
 
 #include <vector>
+#include <memory>
 #include <string>
 using std::vector;
+using std::unique_ptr;
 using std::string;
 
 class Player {
 public:
 	Player(string n);
 	~Player();
-	vector<Card>& getPlayerDeck();
-	virtual vector<Card>& getPlayerDiscard() = 0;
-	string getName() const;
+	vector<unique_ptr<Card>>& getPlayerDeck();
+	virtual vector<unique_ptr<Card>>& getPlayerDiscard() = 0;
+	string& getName() const;
 	//void show();//test function
 	int getDeckCombination() const;//get deck's combination, estimated by Croupier
 	void setDeckCombination(int c);//set combination points
@@ -23,13 +25,13 @@ public:
 	virtual void setPlayerDiscard(vector<bool> positionsOfReturnedCards);//does nothing by default
 
 protected:
-	vector<Card> playerDeck;
-	vector<Card> playerDiscard;
+	vector<unique_ptr<Card>> playerDeck;
+	vector<unique_ptr<Card>> playerDiscard;
 
 private:
 	int deckCombination;
 	int deckElderDignity;
-	string name;
+	string& name;
 
 };
 

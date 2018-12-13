@@ -7,15 +7,13 @@
 class AIPlayer : public Player {
 public:
 	AIPlayer(string n);
-	vector<Card>& getPlayerDiscard();
-
-	/*void setPlayerDeck(vector<Card> c) {
-		playerDeck = c;
-	};*/
+	vector<unique_ptr<Card>>& getPlayerDiscard() override;
+	static int getCurrentName();//get current name index
 
 private:
-	//const int riskRule = ROYAL_FLUSH / 2;//sample
 	bool checked; //if player's deck was already checked on points
+	static int currentNameIndex;//current name index from AIPlayerFactory default names
+
 };
 
 #endif __AI_PLAYER__

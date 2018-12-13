@@ -1,71 +1,89 @@
 #include "Croupier.h"
 
-#include <iostream>
 #include <ctime>
 #include <algorithm>
+#include <cassert>
 
 Croupier::Croupier() 
 {
-	std::cout << "***!Croupier created!***" << std::endl;
 	//filling the main deck
-	mainDeck.push_back(Card(A, PEAKS));
-	mainDeck.push_back(Card(A, HEARTS));
-	mainDeck.push_back(Card(A, TAMBOURINES));
-	mainDeck.push_back(Card(A, CLUBS));
-	mainDeck.push_back(Card(K, PEAKS));
-	mainDeck.push_back(Card(K, HEARTS));
-	mainDeck.push_back(Card(K, TAMBOURINES));
-	mainDeck.push_back(Card(K, CLUBS));
-	mainDeck.push_back(Card(Q, PEAKS));
-	mainDeck.push_back(Card(Q, HEARTS));
-	mainDeck.push_back(Card(Q, TAMBOURINES));
-	mainDeck.push_back(Card(Q, CLUBS));
-	mainDeck.push_back(Card(J, PEAKS));
-	mainDeck.push_back(Card(J, HEARTS));
-	mainDeck.push_back(Card(J, TAMBOURINES));
-	mainDeck.push_back(Card(J, CLUBS));
-	mainDeck.push_back(Card(TEN, PEAKS));
-	mainDeck.push_back(Card(TEN, HEARTS));
-	mainDeck.push_back(Card(TEN, TAMBOURINES));
-	mainDeck.push_back(Card(TEN, CLUBS));
-	mainDeck.push_back(Card(NINE, PEAKS));
-	mainDeck.push_back(Card(NINE, HEARTS));
-	mainDeck.push_back(Card(NINE, TAMBOURINES));
-	mainDeck.push_back(Card(NINE, CLUBS));
-	mainDeck.push_back(Card(EIGHT, PEAKS));
-	mainDeck.push_back(Card(EIGHT, HEARTS));
-	mainDeck.push_back(Card(EIGHT, TAMBOURINES));
-	mainDeck.push_back(Card(EIGHT, CLUBS));
-	mainDeck.push_back(Card(SEVEN, PEAKS));
-	mainDeck.push_back(Card(SEVEN, HEARTS));
-	mainDeck.push_back(Card(SEVEN, TAMBOURINES));
-	mainDeck.push_back(Card(SEVEN, CLUBS));
-	mainDeck.push_back(Card(SIX, PEAKS));
-	mainDeck.push_back(Card(SIX, HEARTS));
-	mainDeck.push_back(Card(SIX, TAMBOURINES));
-	mainDeck.push_back(Card(SIX, CLUBS));
-	mainDeck.push_back(Card(FIVE, PEAKS));
-	mainDeck.push_back(Card(FIVE, HEARTS));
-	mainDeck.push_back(Card(FIVE, TAMBOURINES));
-	mainDeck.push_back(Card(FIVE, CLUBS));
-	mainDeck.push_back(Card(FOUR, PEAKS));
-	mainDeck.push_back(Card(FOUR, HEARTS));
-	mainDeck.push_back(Card(FOUR, TAMBOURINES));
-	mainDeck.push_back(Card(FOUR, CLUBS));
-	mainDeck.push_back(Card(THREE, PEAKS));
-	mainDeck.push_back(Card(THREE, HEARTS));
-	mainDeck.push_back(Card(THREE, TAMBOURINES));
-	mainDeck.push_back(Card(THREE, CLUBS));
-	mainDeck.push_back(Card(TWO, PEAKS));
-	mainDeck.push_back(Card(TWO, HEARTS));
-	mainDeck.push_back(Card(TWO, TAMBOURINES));
-	mainDeck.push_back(Card(TWO, CLUBS));	
+
+	mainDeck.emplace_back(new Card(A, PEAKS));
+	mainDeck.emplace_back(new Card(A, HEARTS));
+	mainDeck.emplace_back(new Card(A, TAMBOURINES));
+	mainDeck.emplace_back(new Card(A, CLUBS));
+	mainDeck.emplace_back(new Card(K, PEAKS));
+	mainDeck.emplace_back(new Card(K, HEARTS));
+	mainDeck.emplace_back(new Card(K, TAMBOURINES));
+	mainDeck.emplace_back(new Card(K, CLUBS));
+	mainDeck.emplace_back(new Card(Q, PEAKS));
+	mainDeck.emplace_back(new Card(Q, HEARTS));
+	mainDeck.emplace_back(new Card(Q, TAMBOURINES));
+	mainDeck.emplace_back(new Card(Q, CLUBS));
+	mainDeck.emplace_back(new Card(J, PEAKS));
+	mainDeck.emplace_back(new Card(J, HEARTS));
+	mainDeck.emplace_back(new Card(J, TAMBOURINES));
+	mainDeck.emplace_back(new Card(J, CLUBS));
+	mainDeck.emplace_back(new Card(TEN, PEAKS));
+	mainDeck.emplace_back(new Card(TEN, HEARTS));
+	mainDeck.emplace_back(new Card(TEN, TAMBOURINES));
+	mainDeck.emplace_back(new Card(TEN, CLUBS));
+	mainDeck.emplace_back(new Card(NINE, PEAKS));
+	mainDeck.emplace_back(new Card(NINE, HEARTS));
+	mainDeck.emplace_back(new Card(NINE, TAMBOURINES));
+	mainDeck.emplace_back(new Card(NINE, CLUBS));
+	mainDeck.emplace_back(new Card(EIGHT, PEAKS));
+	mainDeck.emplace_back(new Card(EIGHT, HEARTS));
+	mainDeck.emplace_back(new Card(EIGHT, TAMBOURINES));
+	mainDeck.emplace_back(new Card(EIGHT, CLUBS));
+	mainDeck.emplace_back(new Card(SEVEN, PEAKS));
+	mainDeck.emplace_back(new Card(SEVEN, HEARTS));
+	mainDeck.emplace_back(new Card(SEVEN, TAMBOURINES));
+	mainDeck.emplace_back(new Card(SEVEN, CLUBS));
+	mainDeck.emplace_back(new Card(SIX, PEAKS));
+	mainDeck.emplace_back(new Card(SIX, HEARTS));
+	mainDeck.emplace_back(new Card(SIX, TAMBOURINES));
+	mainDeck.emplace_back(new Card(SIX, CLUBS));
+	mainDeck.emplace_back(new Card(FIVE, PEAKS));
+	mainDeck.emplace_back(new Card(FIVE, HEARTS));
+	mainDeck.emplace_back(new Card(FIVE, TAMBOURINES));
+	mainDeck.emplace_back(new Card(FIVE, CLUBS));
+	mainDeck.emplace_back(new Card(FOUR, PEAKS));
+	mainDeck.emplace_back(new Card(FOUR, HEARTS));
+	mainDeck.emplace_back(new Card(FOUR, TAMBOURINES));
+	mainDeck.emplace_back(new Card(FOUR, CLUBS));
+	mainDeck.emplace_back(new Card(THREE, PEAKS));
+	mainDeck.emplace_back(new Card(THREE, HEARTS));
+	mainDeck.emplace_back(new Card(THREE, TAMBOURINES));
+	mainDeck.emplace_back(new Card(THREE, CLUBS));
+	mainDeck.emplace_back(new Card(TWO, PEAKS));
+	mainDeck.emplace_back(new Card(TWO, HEARTS));
+	mainDeck.emplace_back(new Card(TWO, TAMBOURINES));
+	mainDeck.emplace_back(new Card(TWO, CLUBS));
+
+	//deck verification
+	//sort by dignity
+	sort(mainDeck.begin(), mainDeck.end(), sortByDignity);
+	//sort by suit
+	for (int i = 0; i < mainDeck.size() - 1; i++)
+	{
+		//if sorted by dignity, but not by suit
+		if (mainDeck.at(i)->getCardDignity() == mainDeck.at(i + 1)->getCardDignity() &&
+			mainDeck.at(i)->getCardSuit() > mainDeck.at(i + 1)->getCardSuit())
+		{
+			sort(mainDeck.begin() + i, mainDeck.begin() + (i + 2), sortBySuit);
+			i = 0;//restart the cycle from the beginning
+		}
+	}
+
+	mainDeck.erase(unique(mainDeck.begin(), mainDeck.end(), cardComparison), mainDeck.end());
+	
+	assert(mainDeck.size() == fullDeckSize);
 
 }
 
 Croupier::~Croupier()
 {
-	std::cout << "***!Croupier deleted!***" << std::endl;
 }
 
 Croupier & Croupier::getInstance()
@@ -80,19 +98,6 @@ void Croupier::mix()
 	random_shuffle(mainDeck.begin(), mainDeck.end());
 }
 
-/*void Croupier::show() {
-
-	for (int i = 0; i < mainDeck.size(); i++) {
-		mainDeck[i].show();
-		std::cout << std::endl;
-	}
-
-}*/
-
-/*void Croupier::showSize() {
-	std::cout << "Main deck size is: " << mainDeck.size() << std::endl;
-}*/
-
 void Croupier::giveCards(Player& player) 
 {
 
@@ -100,8 +105,8 @@ void Croupier::giveCards(Player& player)
 
 	for (int i = 0; i < lack; i++) 
 	{
-		player.getPlayerDeck().push_back(mainDeck.back());
-		mainDeck.pop_back();
+		player.getPlayerDeck().emplace_back(std::move(mainDeck.front()));
+		mainDeck.erase(mainDeck.begin());
 	}
 
 }
@@ -111,8 +116,8 @@ void Croupier::takeCardsBack(Player& player)
 
 	for (; player.getPlayerDiscard().size();) 
 	{
-		mainDeck.push_back(player.getPlayerDiscard().back());
-		player.getPlayerDiscard().pop_back();
+		mainDeck.emplace_back(std::move(player.getPlayerDiscard().front()));
+		player.getPlayerDiscard().erase(player.getPlayerDiscard().begin());
 	}
 
 }
@@ -121,8 +126,8 @@ void Croupier::scoring(Player& player)
 {
 
 	//set deck combination and deck elder dignity of the player according to estimation function 
-	player.setDeckCombination(estimation(player.getPlayerDeck())[0]);
-	player.setDeckElderDignity(estimation(player.getPlayerDeck())[1]);
+	player.setDeckCombination(estimation(player.getPlayerDeck()).at(COMBINATION));
+	player.setDeckElderDignity(estimation(player.getPlayerDeck()).at(ELDER_DIGNITY));
 
 		if (!currentLeader.size()) //if there are no possible winners yet
 			currentLeader.push_back(&player); //set pointer to player

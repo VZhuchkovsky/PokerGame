@@ -1,12 +1,16 @@
 #include "AIPlayer.h"
 
 #include <algorithm>
+#include <cassert>
 
+AIPlayer::AIPlayer(string n) : Player(n), checked(false)
+{
+	if (currentNameIndex == MAX_PLAYERS)
+		assert(false);
+	currentNameIndex++;
+}
 
-AIPlayer::AIPlayer(string n) : Player(n), checked(false) 
-{}
-
-vector<Card>& AIPlayer::getPlayerDiscard() 
+vector<unique_ptr<Card>>& AIPlayer::getPlayerDiscard()
 {
 
 	if (checked) //if player's deck has already been checked
@@ -15,7 +19,7 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 	vector<bool> positionsOfReturnedCards(PLAYER_DECK_SIZE);//positions of cards to return
 									 //false - keep the card, true - discard the card
 
-	int currentEstimation = estimation(playerDeck).at(0);
+	int currentEstimation = estimation(playerDeck).at(COMBINATION);
 
 	if (currentEstimation <= THREE_OF_A_KIND) 
 	{
@@ -32,7 +36,7 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 				//AI's strategy works as follows: in player's deck, sorted by suit, if there are 4 cards of the same suit, than
 				//middle card's suit will represent the most popular suit in the deck. 
 				//P.S.: also it's possible to use same strategy for 3 cards, but this feature is currently inactive.
-				if (i != (playerDeck.size() / 2) + 1 && playerDeck.at(i).getCardSuit() == playerDeck.at((playerDeck.size() / 2) + 1).getCardSuit())
+				if (i != (playerDeck.size() / 2) + 1 && playerDeck.at(i)->getCardSuit() == playerDeck.at((playerDeck.size() / 2) + 1)->getCardSuit())
 					++countSameSuit;
 			}
 
@@ -47,7 +51,7 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 				{
 					//if card has suit, that is different from the most popular in the deck,
 					//than mark this card to discard.
-					if (playerDeck.at(i).getCardSuit() != playerDeck.at((playerDeck.size() / 2) + 1).getCardSuit())
+					if (playerDeck.at(i)->getCardSuit() != playerDeck.at((playerDeck.size() / 2) + 1)->getCardSuit())
 						positionsOfReturnedCards.at(i) = true;
 				}
 
@@ -57,7 +61,7 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 			if (!almostFlush) 
 			{
 				positionsOfReturnedCards = { true, true, true , true, true };//mark all cards to discard
-				sort(playerDeck.begin(), playerDeck.end());//sort playerDeck by Dignity
+				sort(playerDeck.begin(), playerDeck.end(), sortByDignity);//sort playerDeck by Dignity
 
 				//counting straight
 				//The reason why straight counting cycle works only if almostFlush flag is false is
@@ -67,7 +71,7 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 				for (int i = 1; i < playerDeck.size(); i++) 
 				{
 					//if previous card has dignity of the current card - 1, then count straight
-					if (playerDeck.at(i - 1).getCardDignity() == playerDeck.at(i).getCardDignity() - 1)
+					if (playerDeck.at(i - 1)->getCardDignity() == playerDeck.at(i)->getCardDignity() - 1)
 					{
 						++countStraight;
 						//and dismark the cards
@@ -105,7 +109,7 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 			{
 				for (int j = 0; j < playerDeck.size(); j++) 
 				{
-					if (i != j && playerDeck.at(i).getCardDignity() == playerDeck.at(j).getCardDignity())
+					if (i != j && playerDeck.at(i)->getCardDignity() == playerDeck.at(j)->getCardDignity())
 						++countSameDignity;
 				}
 				//if card's dignity is unique in the deck
@@ -126,7 +130,7 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 
 		if (positionsOfReturnedCards.at(i))
 		{
-			playerDiscard.push_back(playerDeck.at(i));
+			playerDiscard.emplace_back(move(playerDeck.at(i)));
 			playerDeck.erase(playerDeck.begin() + i);
 			positionsOfReturnedCards.erase(positionsOfReturnedCards.begin() + i);
 			i = 0;
@@ -139,4 +143,11 @@ vector<Card>& AIPlayer::getPlayerDiscard()
 	return playerDiscard;
 		
 }
+
+int AIPlayer::getCurrentName()
+{
+	return currentNameIndex;
+}
+
+int AIPlayer::currentNameIndex = 0;
 

@@ -2,6 +2,8 @@
 
 #include <array>
 
+#include <iostream>
+
 
 Player::Player(string n) : name(n) 
 {
@@ -11,19 +13,19 @@ Player::Player(string n) : name(n)
 Player::~Player()
 {}
 
-vector<Card>& Player::getPlayerDeck() 
+vector<unique_ptr<Card>>& Player::getPlayerDeck()
 {
 	return playerDeck;
 }
 
-string Player::getName() const
+string& Player::getName() const
 {
 	return name;
 }
 
 /*void Player::show() {
 	for (int i = 0; i < playerDeck.size(); i++) {
-		playerDeck[i].show();
+		playerDeck[i]->show();
 		std::cout << std::endl;
 	}
 }*/
@@ -49,4 +51,5 @@ void Player::setDeckElderDignity(int ec)
 }
 
 void Player::setPlayerDiscard(vector<bool> positionsOfReturnedCards)
-{}
+{
+}

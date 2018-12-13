@@ -1,29 +1,50 @@
 #include "funcs.h"
 
 #include <algorithm>
+#include <memory>
+#include <cassert>
 
-array<int,2> estimation(vector<Card> deck) {
+using std::array;
 
-	sort(deck.begin(), deck.end());//sort vector<Card> by dignity from small to high
+bool sortBySuit(const std::unique_ptr<Card>& c1, const std::unique_ptr<Card>& c2)
+{
+	return (c1->getCardSuit() < c2->getCardSuit());
+}
+
+bool sortByDignity(const std::unique_ptr<Card>& c1, const std::unique_ptr<Card>& c2)
+{
+	return (c1->getCardDignity() < c2->getCardDignity());
+}
+
+bool cardComparison(const std::unique_ptr<Card>& c1, const std::unique_ptr<Card>& c2)
+{
+	return ((c1->getCardDignity() == c2->getCardDignity()) && (c1->getCardSuit() == c2->getCardSuit()));
+}
+
+array<int, 2> estimation(vector<std::unique_ptr<Card>>& deck) {
+	
+	assert(deck.size() == 5);//additional verification
+
+	sort(deck.begin(), deck.end(), sortByDignity);//sort vector<Card> by dignity from small to high
 
 	int countSameDignity = 1, countSameSuit = 1, countStraight = 1;// , elderCardInCombination = 0;
-	array<int,2> combinationPoints; //points for the deck's combination; 
-									//combinationPoints[0] represents combination of several cards (PAIR, FLUSH and etc.)
-									//combinationPoints[1] represents the elder dignity overall or 
-									//in combination i.e. PAIR, TWO PAIRS, THREE OF A KID, FOUR OF A KIND
+	array<int, 2> combinationPoints; //points for the deck's combination; 
+									 //combinationPoints[0] represents combination of several cards (PAIR, FLUSH and etc.)
+									 //combinationPoints[1] represents the elder dignity overall or 
+									 //in combination i.e. PAIR, TWO PAIRS, THREE OF A KID, FOUR OF A KIND
 	combinationPoints.fill(0);//filling combination point
 	vector<bool> recordedDignityPositions(PLAYER_DECK_SIZE); //to mark cards with a same dignity
 	bool onePair = false, secondPair = false, trinity = false, flush = false, straight = false;
 
-	for (int i = 0; i < deck.size(); i++) 
+	for (int i = 0; i < deck.size(); i++)
 	{
 
 		if (recordedDignityPositions.at(i))
 			continue; //preventing unnecessary iterations
-		else 
+		else
 			recordedDignityPositions.at(i) = true;
 
-		for (int j = 0; j < deck.size(); j++) 
+		for (int j = 0; j < deck.size(); j++)
 		{
 
 			if (recordedDignityPositions.at(j))
@@ -31,22 +52,22 @@ array<int,2> estimation(vector<Card> deck) {
 
 			if (i != j) {
 
-				if (deck.at(i).getCardDignity() == deck.at(j).getCardDignity())
+				if (deck.at(i)->getCardDignity() == deck.at(j)->getCardDignity())
 				{
 					recordedDignityPositions.at(j) = true;
 					++countSameDignity;
 					//elder dignity in combination
-					if (countSameDignity > 1 && deck.at(i).getCardDignity() > combinationPoints.at(1))
-						combinationPoints.at(1) = deck.at(i).getCardDignity();
+					if (countSameDignity > 1 && deck.at(i)->getCardDignity() > combinationPoints.at(ELDER_DIGNITY))
+						combinationPoints.at(ELDER_DIGNITY) = deck.at(i)->getCardDignity();
 				}
 
 				if (i == 0 && countSameDignity == 1) {//to prevent unnecessary iterations
-												      //(flush and straight cannot exist if the deck already has pair/trinity/four)
-						if (deck.at(i).getCardSuit() == deck.at(j).getCardSuit()) //counting flush
-							++countSameSuit;
+													  //(flush and straight cannot exist if the deck already has pair/trinity/four)
+					if (deck.at(i)->getCardSuit() == deck.at(j)->getCardSuit()) //counting flush
+						++countSameSuit;
 
-						if (deck.at(j - 1).getCardDignity() == deck.at(j).getCardDignity() - 1)  //counting straight
-							++countStraight; //if previous card has dignity of the current card - 1, then count straight
+					if (deck.at(j - 1)->getCardDignity() == deck.at(j)->getCardDignity() - 1)  //counting straight
+						++countStraight; //if previous card has dignity of the current card - 1, then count straight
 
 				}
 
@@ -54,40 +75,40 @@ array<int,2> estimation(vector<Card> deck) {
 
 		}
 
-		if (countSameSuit == 5) 
+		if (countSameSuit == 5)
 		{
 			flush = true;
-			combinationPoints.at(0) = FLUSH;
+			combinationPoints.at(COMBINATION) = FLUSH;
 		}
 
-		if (countStraight == 5) 
+		if (countStraight == 5)
 		{
 			straight = true;
-			combinationPoints.at(0) = STRAIGHT;
+			combinationPoints.at(COMBINATION) = STRAIGHT;
 		}
 
-		if (straight || flush) 
+		if (straight || flush)
 		{
 			//elder dignity in combination
-			combinationPoints.at(1) = deck.back().getCardDignity();//last card in sorted deck has elder dignity
+			combinationPoints.at(ELDER_DIGNITY) = deck.back()->getCardDignity();//last card in sorted deck has elder dignity
 
-			if (straight && flush) 
+			if (straight && flush)
 			{
 
-				if (deck.at(PLAYER_DECK_SIZE - 1).getCardDignity() == A)
+				if (deck.at(PLAYER_DECK_SIZE - 1)->getCardDignity() == A)
 				{
-					combinationPoints.at(0) = ROYAL_FLUSH;
+					combinationPoints.at(COMBINATION) = ROYAL_FLUSH;
 					break;
 				}
-				else 
+				else
 				{
-					combinationPoints.at(0) = STRAIGHT_FLUSH;
+					combinationPoints.at(COMBINATION) = STRAIGHT_FLUSH;
 					break;
 				}
 
 			}
 
-			else 
+			else
 			{
 				break;
 			}
@@ -95,33 +116,33 @@ array<int,2> estimation(vector<Card> deck) {
 		}
 
 
-		if (countSameDignity == 4) 
+		if (countSameDignity == 4)
 		{
-			combinationPoints.at(0) = FOUR_OF_A_KIND;
+			combinationPoints.at(COMBINATION) = FOUR_OF_A_KIND;
 			break;
 		}
 
-		if (countSameDignity == 3) 
+		if (countSameDignity == 3)
 		{
 			trinity = true;
-			combinationPoints.at(0) = THREE_OF_A_KIND;
+			combinationPoints.at(COMBINATION) = THREE_OF_A_KIND;
 		}
 
 		if (countSameDignity == 2) {
 			if (onePair) { //if the deck already has one pair
-				combinationPoints.at(0) = TWO_PAIRS;
+				combinationPoints.at(COMBINATION) = TWO_PAIRS;
 				break;
 			}
-			else 
+			else
 			{
 				onePair = true;
-				combinationPoints.at(0) = ONE_PAIR;
+				combinationPoints.at(COMBINATION) = ONE_PAIR;
 			}
 		}
 
-		if (onePair && trinity) 
+		if (onePair && trinity)
 		{
-			combinationPoints.at(0) = FULL_HOUSE;
+			combinationPoints.at(COMBINATION) = FULL_HOUSE;
 			break;
 		}
 
@@ -130,16 +151,11 @@ array<int,2> estimation(vector<Card> deck) {
 	}
 
 	//if there is no combination in the deck - mark the elder card
-	if (!combinationPoints.at(0))
-		combinationPoints.at(1) = deck.back().getCardDignity();//last card in sorted deck has elder dignity
+	if (!combinationPoints.at(COMBINATION))
+		combinationPoints.at(ELDER_DIGNITY) = deck.back()->getCardDignity();//last card in sorted deck has elder dignity
 
 	return combinationPoints;
 
-}
-
-bool sortBySuit(Card c1, Card c2) 
-{
-	return (c1.getCardSuit() < c2.getCardSuit());
 }
 
 const string enumToString(cardDignity c)
