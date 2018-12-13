@@ -18,7 +18,7 @@ vector<unique_ptr<Card>>& Player::getPlayerDeck()
 	return playerDeck;
 }
 
-string& Player::getName() const
+string Player::getName() const
 {
 	return name;
 }

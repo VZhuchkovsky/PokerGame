@@ -16,7 +16,7 @@ public:
 	~Player();
 	vector<unique_ptr<Card>>& getPlayerDeck();
 	virtual vector<unique_ptr<Card>>& getPlayerDiscard() = 0;
-	string& getName() const;
+	string getName() const;
 	//void show();//test function
 	int getDeckCombination() const;//get deck's combination, estimated by Croupier
 	void setDeckCombination(int c);//set combination points
@@ -31,7 +31,7 @@ protected:
 private:
 	int deckCombination;
 	int deckElderDignity;
-	string& name;
+	string name;
 
 };
 
