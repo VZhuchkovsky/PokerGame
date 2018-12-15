@@ -23,12 +23,6 @@ string Player::getName() const
 	return name;
 }
 
-/*void Player::show() {
-	for (int i = 0; i < playerDeck.size(); i++) {
-		playerDeck[i]->show();
-		std::cout << std::endl;
-	}
-}*/
 
 int Player::getDeckCombination() const
 {

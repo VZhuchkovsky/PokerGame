@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cassert>
 
-Croupier::Croupier() 
+Croupier::Croupier() : fullDeckSize(52)
 {
 	//filling the main deck
 

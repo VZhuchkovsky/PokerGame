@@ -25,7 +25,7 @@ private:
 	vector<Player*> currentLeader;//points to the player with currently highest score
 	//the reason of using vector of pointers is that there can be 4 potentional players
 	//with a same score.
-	const int fullDeckSize = 52;//size of full complete deck
+	const int fullDeckSize;//size of full complete deck
 
 };
 

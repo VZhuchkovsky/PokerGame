@@ -12,9 +12,6 @@ public:
 	std::vector<unique_ptr<Card>>& getPlayerDiscard() override;
 	void setPlayerDiscard(std::vector<bool> positionsOfReturnedCards) override;
 
-	/*void setPlayerDeck(vector<Card> c) {
-		playerDeck = c;
-	};*/
 };
 
 #endif __HUMAN_PLAYER__
